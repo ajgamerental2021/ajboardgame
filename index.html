@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AJ Boardgame Rental</title>
+  <style>
+    :root{
+      --bg:#f6f6f7;
+      --card:#ffffff;
+      --card-soft:#f3efec;
+      --text:#171717;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --red:#e10600;
+      --red-dark:#b30000;
+      --red-soft:#fff1f1;
+      --pink-soft:#fff5f7;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    img{display:block;max-width:100%}
+    button,input,textarea{font:inherit}
+    a{text-decoration:none;color:inherit}
+
+    .container{
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      background:rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid #ececec;
+    }
+    .topbar-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:14px 0;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:14px;
+    }
+    .brand-logo{
+      width:56px; height:56px; border-radius:999px; overflow:hidden;
+      background:#111;
+      border:2px solid #fff;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand-logo img{
+      width:100%; height:100%; object-fit:cover;
+    }
+    .brand-text h1{
+      margin:0;
+      font-size:1.1rem;
+      line-height:1.15;
+    }
+    .brand-text p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .top-actions{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .lang-switch{
+      display:flex; gap:8px;
+    }
+    .lang-btn{
+      border:none;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:800;
+      background:#fff;
+      border:1px solid var(--line);
+      color:#111;
+    }
+    .lang-btn.active{
+      background:var(--red);
+      color:#fff;
+      border-color:var(--red);
+    }
+
+    .btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:800;
+      transition:.18s ease;
+    }
+    .btn-primary{
+      background:var(--red);
+      color:#fff;
+      box-shadow:0 8px 16px rgba(225,6,0,.18);
+    }
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-secondary{
+      background:#fff;
+      border:1px solid var(--line);
+      color:#111;
+    }
+    .btn-ghost{
+      background:#111;
+      color:#fff;
+    }
+
+    .hero{
+      padding:28px 0 22px;
+      text-align:center;
+    }
+    .hero-card{
+      background:linear-gradient(180deg,#fff,#fff7f7);
+      border:1px solid #f0e2e2;
+      border-radius:28px;
+      padding:26px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card::after{
+      content:"";
+      position:absolute;
+      inset:auto -60px -120px auto;
+      width:260px; height:260px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(225,6,0,.10), rgba(225,6,0,0));
+      pointer-events:none;
+    }
+    .badge-row{
+      display:flex; justify-content:center; gap:12px; flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .badge{
+      background:var(--red-soft);
+      color:#3a1111;
+      border:1px solid #f1c8c8;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:700;
+      box-shadow:var(--shadow);
+    }
+    .hero h2{
+      margin:0 0 10px;
+      font-size:clamp(2rem,4vw,3.2rem);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .hero h2 .accent{color:var(--red)}
+    .hero p{
+      margin:0;
+      color:#555;
+      font-size:1.05rem;
+      line-height:1.6;
+    }
+
+    .section{
+      padding:18px 0;
+    }
+    .section-title{
+      margin:0 0 8px;
+      font-size:2rem;
+      line-height:1.1;
+      letter-spacing:-.02em;
+      color:#111;
+    }
+    .section-sub{
+      margin:0 0 18px;
+      color:#666;
+      font-size:1rem;
+      line-height:1.6;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid #ececec;
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .steps{
+      display:grid;
+      gap:12px;
+    }
+    .step{
+      display:flex; gap:12px; align-items:flex-start;
+      background:#fafafa;
+      border:1px solid #ededed;
+      border-radius:16px;
+      padding:14px;
+    }
+    .step-num{
+      width:34px; height:34px; border-radius:50%;
+      display:grid; place-items:center;
+      background:var(--red);
+      color:#fff;
+      font-weight:800;
+      flex:0 0 auto;
+    }
+
+    .notice{
+      display:flex; gap:10px; align-items:flex-start;
+      background:var(--pink-soft);
+      border:1px solid #f3d7dd;
+      border-radius:16px;
+      padding:14px;
+      margin-bottom:12px;
+      color:#341515;
+      font-weight:700;
+    }
+
+    .games-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:16px;
+    }
+    .game-card{
+      background:#fff;
+      border:1px solid #ececec;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .game-card:hover{
+      transform:translateY(-2px);
+      border-color:#f0c7c7;
+    }
+    .cover{
+      aspect-ratio:3/4;
+      background:#f0f0f0;
+      position:relative;
+    }
+    .cover img{
+      width:100%; height:100%; object-fit:cover;
+      background:#f4f4f4;
+    }
+    .fallback{
+      display:none;
+      position:absolute; inset:0;
+      align-items:center; justify-content:center;
+      padding:12px;
+      text-align:center;
+      color:#666;
+      font-weight:700;
+      background:#f5f5f5;
+    }
+    .game-body{padding:14px}
+    .game-title{
+      margin:0 0 8px;
+      font-size:1rem;
+      line-height:1.35;
+      min-height:2.7em;
+      color:#111;
+    }
+    .game-desc{
+      margin:0;
+      color:#666;
+      font-size:.92rem;
+      line-height:1.55;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height:4.3em;
+    }
+    .pill-row{
+      display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;
+    }
+    .pill{
+      display:inline-flex; align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff5f5;
+      border:1px solid #f2d4d4;
+      color:#6d1b1b;
+      font-size:.84rem;
+      font-weight:700;
+    }
+
+    .rent-layout{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .picker{
+      display:grid; gap:10px;
+      max-height:440px; overflow:auto; padding-right:4px;
+    }
+    .pick-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:12px;
+      background:#fbfbfb;
+      border:1px solid #ededed;
+      border-radius:16px;
+    }
+    .pick-item input[type="checkbox"]{
+      width:18px;height:18px;accent-color:var(--red);
+    }
+    .pick-title{font-weight:800}
+    .pick-sub{font-size:.88rem;color:#666;margin-top:3px}
+    .pick-price{font-weight:800;color:#111}
+
+    .field{margin-bottom:14px}
+    .field label{
+      display:block; margin-bottom:8px; font-weight:800;
+      color:#111;
+    }
+    .field input,.field textarea{
+      width:100%;
+      border:1px solid #e6e6e6;
+      background:#fff;
+      border-radius:14px;
+      padding:13px 14px;
+      outline:none;
+    }
+    .field input:focus,.field textarea:focus{
+      border-color:#efb0b0;
+      box-shadow:0 0 0 3px rgba(225,6,0,.08);
+    }
+    .hint{
+      margin-top:7px; color:#777; font-size:.88rem;
+      line-height:1.5;
+    }
+
+    .option-box{
+      background:#fff7f7;
+      border:1px solid #f3d5d5;
+      border-radius:16px;
+      padding:14px;
+      margin:10px 0 16px;
+    }
+    .option-line{
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .option-line input{
+      width:18px;height:18px;margin-top:2px;accent-color:var(--red);
+    }
+    .option-title{font-weight:800}
+    .option-note{color:#8b1e1e;font-size:.92rem;margin-top:4px}
+
+    .summary-stack{
+      display:grid;
+      gap:12px;
+    }
+    .summary-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      background:#f1ece9;
+      border:1px solid #e7dfdb;
+      border-radius:18px;
+      padding:16px 18px;
+      color:#222;
+    }
+    .summary-row .label{
+      font-weight:700;
+      color:#2c2c2c;
+    }
+    .summary-row .value{
+      font-weight:900;
+      font-size:1.1rem;
+      color:#20242c;
+      text-align:right;
+    }
+    .summary-total{
+      background:#efe8e4;
+      border:1px solid #ddd1cb;
+    }
+    .summary-total .label{
+      font-size:1.08rem;
+      font-weight:900;
+    }
+    .summary-total .value{
+      font-size:1.5rem;
+      color:#1b2029;
+    }
+
+    .summary-note{
+      margin-top:14px;
+      background:#fff;
+      border:1px dashed #e3c2c2;
+      border-radius:16px;
+      padding:14px;
+      color:#555;
+      line-height:1.65;
+      white-space:pre-wrap;
+      min-height:130px;
+    }
+
+    .btn-row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .modal,.admin-modal,.login-modal{
+      position:fixed; inset:0; z-index:100;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.45);
+      padding:18px;
+    }
+    .modal.show,.admin-modal.show,.login-modal.show{display:flex}
+
+    .modal-card{
+      width:min(920px,100%);
+      max-height:92vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:24px;
+      border:1px solid #ececec;
+      box-shadow:0 20px 40px rgba(0,0,0,.18);
+      position:relative;
+    }
+    .close-btn{
+      position:absolute; top:14px; right:14px;
+      width:40px;height:40px;border:none;border-radius:999px;
+      background:#111;color:#fff;cursor:pointer;font-weight:800;
+    }
+
+    .modal-grid{
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+    }
+    .modal-cover{
+      background:#f4f4f4;
+      min-height:100%;
+    }
+    .modal-cover img{
+      width:100%; height:100%; object-fit:cover;
+    }
+    .modal-body{
+      padding:24px;
+    }
+    .modal-title{
+      margin:0 0 10px;
+      font-size:1.6rem;
+      line-height:1.15;
+    }
+    .modal-desc,.modal-how{
+      color:#444;
+      line-height:1.7;
+    }
+    .modal-subtitle{
+      margin:18px 0 8px;
+      font-weight:900;
+      color:#111;
+    }
+
+    .admin-wrap{
+      padding:20px;
+    }
+    .admin-header{
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+      flex-wrap:wrap; margin-bottom:18px;
+    }
+    .admin-list{
+      display:grid; gap:12px;
+    }
+    .admin-item{
+      display:grid;
+      grid-template-columns:80px 1fr auto;
+      gap:12px;
+      align-items:center;
+      background:#fafafa;
+      border:1px solid #ececec;
+      border-radius:16px;
+      padding:12px;
+    }
+    .admin-thumb{
+      width:80px;height:80px;border-radius:12px;overflow:hidden;background:#eee;
+    }
+    .admin-thumb img{
+      width:100%;height:100%;object-fit:cover;
+    }
+    .admin-actions{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .small-btn{
+      border:none; border-radius:12px; padding:10px 12px; cursor:pointer; font-weight:800;
+    }
+    .small-edit{background:#111;color:#fff}
+    .small-del{background:#ffe9e9;color:#9a1212}
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .span-2{grid-column:1 / -1}
+
+    @media (max-width:920px){
+      .grid-2,.rent-layout,.modal-grid,.form-grid{
+        grid-template-columns:1fr;
+      }
+      .games-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:640px){
+      .games-grid{grid-template-columns:1fr 1fr}
+      .hero-card{padding:20px}
+      .summary-row .value{font-size:1rem}
+      .summary-total .value{font-size:1.25rem}
+      .topbar-inner{align-items:flex-start; flex-direction:column;}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <img src="AJ Logo(circle)2.png" alt="AJ Logo" onerror="this.src='';this.parentNode.style.background='#e10600';this.parentNode.innerHTML='<div style=&quot;width:100%;height:100%;display:grid;place-items:center;color:#fff;font-weight:900&quot;>AJ</div>';">
+        </div>
+        <div class="brand-text">
+          <h1 id="brandTitle">AJ Boardgame Rental</h1>
+          <p id="brandSub">Owned and operated by AJ Game</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="lang-switch">
+          <button class="lang-btn active" id="btnTh" type="button">ไทย</button>
+          <button class="lang-btn" id="btnEn" type="button">EN</button>
+        </div>
+        <button class="btn btn-secondary" id="scrollRentBtn">คำนวณค่าเช่า</button>
+        <button class="btn btn-primary" id="openAdminBtn">Admin</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="badge-row">
+          <div class="badge" id="badge1">🧩 ราคาเช่า 90 บาท / วัน / เกม</div>
+          <div class="badge" id="badge2">⚡ ให้บริการเช่า กทม. & ปริมณฑล (10.00 - 18.00 น.)</div>
+          <div class="badge" id="badge3">🛵 ส่งด่วน Lalamove ถึงใน 1 - 2 ชม.</div>
+        </div>
+        <h2 id="heroTitle">เช่าบอร์ดเกม <span class="accent" id="heroAccent">ส่งถึงบ้าน</span></h2>
+        <p id="heroSub">เลือกเกมที่ชอบ ระบุวันเช่า สรุปราคาได้ในหน้าเดียว แล้วส่งข้อความไปที่ Line: @ajgame เพื่อยืนยันการจอง</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="section-title" style="font-size:1.5rem" id="howTitle">วิธีการเช่าและจัดส่ง</h3>
+          <p class="section-sub" id="howSub">จองง่าย ดูรายการเกม เลือกเกมที่อยากเช่า แล้วส่งสรุปผ่านไลน์ได้เลย</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div>
+                <strong id="step1Title">เลือกบอร์ดเกมที่ต้องการ</strong>
+                <div class="section-sub" style="margin:4px 0 0" id="step1Sub">เลือกได้มากกว่า 1 เกมตามรายการที่มีในร้าน</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div>
+                <strong id="step2Title">ระบุวันที่เริ่ม / จำนวนวัน</strong>
+                <div class="section-sub" style="margin:4px 0 0" id="step2Sub">กรอกวันเริ่มเช่าและจำนวนวันที่ต้องการเช่า</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div>
+                <strong id="step3Title">ส่งลิงก์ Google Maps</strong>
+                <div class="section-sub" style="margin:4px 0 0" id="step3Sub">ใช้สำหรับเช็กค่าส่งไป-กลับก่อนยืนยันการจอง</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="notice" id="notice1">⚠️ ค่าจัดส่งลูกค้าเป็นผู้รับผิดชอบทั้งไปและกลับ</div>
+          <div class="notice" id="notice2">⚠️ มีการเซ็นสำเนาบัตรประชาชนว่าเช่าบอร์ดเกมกับ AJ</div>
+          <div class="notice" style="background:#fff3f3;border-color:#efcfcf" id="notice3">
+            💬 ส่งสรุปรายการเช่ามาทาง Line: <strong>@ajgame</strong> เพื่อยืนยันอีกครั้ง
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h3 class="section-title" id="gamesTitle">รายการบอร์ดเกม</h3>
+      <p class="section-sub" id="gamesSub">คลิกที่รูปเกมเพื่อดูรายละเอียดเพิ่มเติม เช่น จำนวนผู้เล่น เวลาเล่น และอายุที่แนะนำ</p>
+      <div class="games-grid" id="gamesGrid"></div>
+    </section>
+
+    <section class="section" id="rentSection">
+      <h3 class="section-title" id="rentTitle">เช่าเลย</h3>
+      <p class="section-sub" id="rentSub">เลือกเกมที่ต้องการเช่า กรอกข้อมูล แล้วระบบจะสรุปราคาให้อัตโนมัติ</p>
+
+      <div class="rent-layout">
+        <div class="card">
+          <div class="field">
+            <label id="pickGamesLabel">เลือกบอร์ดเกมที่ต้องการเช่า</label>
+            <div class="picker" id="pickerGrid"></div>
+          </div>
+
+          <div class="field">
+            <label id="startDateLabel">วันที่เริ่มเช่า</label>
+            <input type="date" id="startDate">
+          </div>
+
+          <div class="field">
+            <label id="daysLabel">จำนวนวันที่เช่า</label>
+            <input type="number" id="days" min="1" step="1" placeholder="กรอกจำนวนวัน">
+            <div class="hint" id="daysHint">เว้นว่างไว้ได้ ลูกค้าสามารถกรอกเอง</div>
+          </div>
+
+          <div class="field">
+            <label id="mapsLabel">ลิงก์ Google Maps</label>
+            <input type="text" id="mapsLink" placeholder="https://maps.google.com/...">
+          </div>
+
+          <div class="option-box">
+            <label class="option-line">
+              <input type="checkbox" id="noIdCard">
+              <div>
+                <div class="option-title" id="noIdTitle">ไม่ต้องการส่งสำเนาบัตรประชาชน</div>
+                <div class="option-note" id="noIdNote">ค่าประกัน + เพิ่ม 1,000 บาท / เกม</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="copyBtn">คัดลอกข้อความ</button>
+            <button class="btn btn-secondary" id="clearBtn">ล้างข้อมูล</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 16px;font-size:1.4rem" id="summaryTitle">สรุปรายการเช่า</h3>
+
+          <div class="summary-stack">
+            <div class="summary-row">
+              <div class="label" id="sumCountLabel">จำนวนเกมที่เลือก</div>
+              <div class="value" id="sumCount">0 เกม</div>
+            </div>
+
+            <div class="summary-row">
+              <div class="label" id="sumRentLabel">ค่าเช่ารวม</div>
+              <div class="value" id="sumRent">฿0</div>
+            </div>
+
+            <div class="summary-row">
+              <div class="label" id="sumDepositLabel">ค่าประกันรวม</div>
+              <div class="value" id="sumDeposit">฿0</div>
+            </div>
+
+            <div class="summary-row">
+              <div class="label" id="sumExtraLabel">ค่าประกันเพิ่ม (ไม่ส่งบัตร)</div>
+              <div class="value" id="sumExtra">฿0</div>
+            </div>
+
+            <div class="summary-row summary-total">
+              <div class="label" id="sumTotalLabel">ยอดรวมทั้งหมด</div>
+              <div class="value" id="sumTotal">฿0</div>
+            </div>
+          </div>
+
+          <div class="summary-note" id="summaryNote"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="gameModal">
+    <div class="modal-card">
+      <button class="close-btn" id="closeGameModal">×</button>
+      <div class="modal-grid">
+        <div class="modal-cover">
+          <img id="modalImg" src="" alt="">
+        </div>
+        <div class="modal-body">
+          <h3 class="modal-title" id="modalTitle"></h3>
+          <div class="pill-row" id="modalMeta"></div>
+          <div class="modal-desc" id="modalDesc"></div>
+          <div class="modal-subtitle" id="modalHowTitle">วิธีเล่นคร่าวๆ</div>
+          <div class="modal-how" id="modalHow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-modal" id="loginModal">
+    <div class="modal-card" style="max-width:420px">
+      <button class="close-btn" id="closeLoginModal">×</button>
+      <div class="admin-wrap">
+        <h3 style="margin:0 0 14px" id="loginTitle">Admin Login</h3>
+        <div class="field">
+          <label id="userLabel">Username</label>
+          <input type="text" id="adminUser" autocomplete="username">
+        </div>
+        <div class="field">
+          <label id="passLabel">Password</label>
+          <input type="password" id="adminPass" autocomplete="current-password">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="loginBtn">เข้าสู่ระบบ</button>
+        </div>
+        <div id="loginMsg" style="margin-top:10px;color:#b30000;font-weight:700"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-modal" id="adminModal">
+    <div class="modal-card">
+      <button class="close-btn" id="closeAdminModal">×</button>
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <div>
+            <h3 style="margin:0 0 6px" id="adminHeaderTitle">จัดการรายการบอร์ดเกม</h3>
+            <div style="color:#666" id="adminHeaderSub">เพิ่ม / แก้ไข / ลบ รายการเกมได้จากหน้านี้</div>
+          </div>
+          <div class="btn-row" style="margin-top:0">
+            <button class="btn btn-primary" id="addNewBtn">+ เพิ่มเกมใหม่</button>
+            <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <h4 style="margin:0 0 12px" id="adminFormTitle">เพิ่ม / แก้ไขเกม</h4>
+          <div class="form-grid">
+            <div class="field">
+              <label id="fNameLabel">ชื่อเกม</label>
+              <input type="text" id="fName">
+            </div>
+            <div class="field">
+              <label id="fDepositLabel">ค่าประกัน (บาท)</label>
+              <input type="number" id="fDeposit" min="0" step="100">
+            </div>
+            <div class="field span-2">
+              <label id="fImageLabel">URL รูปเกม</label>
+              <input type="text" id="fImage">
+            </div>
+            <div class="field">
+              <label id="fPlayersLabel">จำนวนผู้เล่น</label>
+              <input type="text" id="fPlayers" placeholder="เช่น 2-4">
+            </div>
+            <div class="field">
+              <label id="fTimeLabel">เวลาเล่น (นาที)</label>
+              <input type="text" id="fTime" placeholder="เช่น 30-45">
+            </div>
+            <div class="field">
+              <label id="fAgeLabel">อายุแนะนำ</label>
+              <input type="text" id="fAge" placeholder="เช่น 10+">
+            </div>
+            <div class="field">
+              <label id="fDescThLabel">คำอธิบายเกม (ไทย)</label>
+              <textarea id="fDescTh" rows="4"></textarea>
+            </div>
+            <div class="field">
+              <label id="fDescEnLabel">คำอธิบายเกม (English)</label>
+              <textarea id="fDescEn" rows="4"></textarea>
+            </div>
+            <div class="field span-2">
+              <label id="fHowThLabel">วิธีเล่นคร่าวๆ (ไทย)</label>
+              <textarea id="fHowTh" rows="4"></textarea>
+            </div>
+            <div class="field span-2">
+              <label id="fHowEnLabel">How to play (English)</label>
+              <textarea id="fHowEn" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="saveGameBtn">บันทึกเกม</button>
+            <button class="btn btn-secondary" id="resetFormBtn">ล้างฟอร์ม</button>
+          </div>
+        </div>
+
+        <div class="admin-list" id="adminList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RENT_PER_DAY = 90;
+    const STORAGE_KEY = "aj_boardgame_admin_v17_bilingual";
+    const ADMIN_USER = "ajgame";
+    const ADMIN_PASS = "T@nose@2026";
+
+    let lang = "th";
+
+    const TEXT = {
+      th: {
+        brandTitle: "AJ Boardgame Rental",
+        brandSub: "Owned and operated by AJ Game",
+        badge1: "🧩 ราคาเช่า 90 บาท / วัน / เกม",
+        badge2: "⚡ ให้บริการเช่า กทม. & ปริมณฑล (10.00 - 18.00 น.)",
+        badge3: "🛵 ส่งด่วน Lalamove ถึงใน 1 - 2 ชม.",
+        heroTitle: "เช่าบอร์ดเกม",
+        heroAccent: "ส่งถึงบ้าน",
+        heroSub: "เลือกเกมที่ชอบ ระบุวันเช่า สรุปราคาได้ในหน้าเดียว แล้วส่งข้อความไปที่ Line: @ajgame เพื่อยืนยันการจอง",
+        howTitle: "วิธีการเช่าและจัดส่ง",
+        howSub: "จองง่าย ดูรายการเกม เลือกเกมที่อยากเช่า แล้วส่งสรุปผ่านไลน์ได้เลย",
+        step1Title: "เลือกบอร์ดเกมที่ต้องการ",
+        step1Sub: "เลือกได้มากกว่า 1 เกมตามรายการที่มีในร้าน",
+        step2Title: "ระบุวันที่เริ่ม / จำนวนวัน",
+        step2Sub: "กรอกวันเริ่มเช่าและจำนวนวันที่ต้องการเช่า",
+        step3Title: "ส่งลิงก์ Google Maps",
+        step3Sub: "ใช้สำหรับเช็กค่าส่งไป-กลับก่อนยืนยันการจอง",
+        notice1: "⚠️ ค่าจัดส่งลูกค้าเป็นผู้รับผิดชอบทั้งไปและกลับ",
+        notice2: "⚠️ มีการเซ็นสำเนาบัตรประชาชนว่าเช่าบอร์ดเกมกับ AJ",
+        notice3: "💬 ส่งสรุปรายการเช่ามาทาง Line: @ajgame เพื่อยืนยันอีกครั้ง",
+        gamesTitle: "รายการบอร์ดเกม",
+        gamesSub: "คลิกที่รูปเกมเพื่อดูรายละเอียดเพิ่มเติม เช่น จำนวนผู้เล่น เวลาเล่น และอายุที่แนะนำ",
+        rentTitle: "เช่าเลย",
+        rentSub: "เลือกเกมที่ต้องการเช่า กรอกข้อมูล แล้วระบบจะสรุปราคาให้อัตโนมัติ",
+        pickGamesLabel: "เลือกบอร์ดเกมที่ต้องการเช่า",
+        startDateLabel: "วันที่เริ่มเช่า",
+        daysLabel: "จำนวนวันที่เช่า",
+        daysPlaceholder: "กรอกจำนวนวัน",
+        daysHint: "เว้นว่างไว้ได้ ลูกค้าสามารถกรอกเอง",
+        mapsLabel: "ลิงก์ Google Maps",
+        noIdTitle: "ไม่ต้องการส่งสำเนาบัตรประชาชน",
+        noIdNote: "ค่าประกัน + เพิ่ม 1,000 บาท / เกม",
+        copyBtn: "คัดลอกข้อความ",
+        clearBtn: "ล้างข้อมูล",
+        summaryTitle: "สรุปรายการเช่า",
+        sumCountLabel: "จำนวนเกมที่เลือก",
+        sumRentLabel: "ค่าเช่ารวม",
+        sumDepositLabel: "ค่าประกันรวม",
+        sumExtraLabel: "ค่าประกันเพิ่ม (ไม่ส่งบัตร)",
+        sumTotalLabel: "ยอดรวมทั้งหมด",
+        modalHowTitle: "วิธีเล่นคร่าวๆ",
+        scrollRentBtn: "คำนวณค่าเช่า",
+        openAdminBtn: "Admin",
+        loginTitle: "Admin Login",
+        userLabel: "Username",
+        passLabel: "Password",
+        loginBtn: "เข้าสู่ระบบ",
+        adminHeaderTitle: "จัดการรายการบอร์ดเกม",
+        adminHeaderSub: "เพิ่ม / แก้ไข / ลบ รายการเกมได้จากหน้านี้",
+        addNewBtn: "+ เพิ่มเกมใหม่",
+        logoutBtn: "Logout",
+        adminFormTitle: "เพิ่ม / แก้ไขเกม",
+        fNameLabel: "ชื่อเกม",
+        fDepositLabel: "ค่าประกัน (บาท)",
+        fImageLabel: "URL รูปเกม",
+        fPlayersLabel: "จำนวนผู้เล่น",
+        fTimeLabel: "เวลาเล่น (นาที)",
+        fAgeLabel: "อายุแนะนำ",
+        fDescThLabel: "คำอธิบายเกม (ไทย)",
+        fDescEnLabel: "คำอธิบายเกม (English)",
+        fHowThLabel: "วิธีเล่นคร่าวๆ (ไทย)",
+        fHowEnLabel: "How to play (English)",
+        saveGameBtn: "บันทึกเกม",
+        resetFormBtn: "ล้างฟอร์ม",
+        rentPerDay: "90 บาท / วัน",
+        depositPrefix: "ค่าประกัน",
+        playersUnit: "ผู้เล่น",
+        minsUnit: "นาที",
+        agePrefix: "อายุ",
+        gameUnit: "เกม",
+        rentalList: "รายการเกมที่เลือก:",
+        noSelected: "- ยังไม่ได้เลือกเกม -",
+        startDateLine: "วันที่เริ่มเช่า",
+        daysLine: "จำนวนวันที่เช่า",
+        mapsLine: "Google Maps",
+        noIdSummary: "ลูกค้าไม่ต้องการส่งสำเนาบัตรประชาชน",
+        extraDepositSummary: "ค่าประกันเพิ่ม",
+        perGame1000: "(เกมละ 1,000 บาท)",
+        rentLine: "ค่าเช่ารวม",
+        depositLine: "ค่าประกันรวม",
+        totalLine: "ยอดรวมทั้งหมด",
+        confirmLine: "กรุณาส่งข้อความนี้มาทาง Line: @ajgame เพื่อยืนยันอีกครั้ง",
+        copied: "คัดลอกข้อความแล้ว",
+        copyFailed: "คัดลอกไม่สำเร็จ",
+        loginError: "username หรือ password ไม่ถูกต้อง",
+        saveSuccess: "บันทึกข้อมูลเรียบร้อย",
+        needName: "กรุณาใส่ชื่อเกม",
+        deleteConfirm: "ลบเกม",
+        editBtn: "แก้ไข",
+        deleteBtn: "ลบ",
+        addEditGame: "เพิ่ม / แก้ไขเกม"
+      },
+      en: {
+        brandTitle: "AJ Boardgame Rental",
+        brandSub: "Owned and operated by AJ Game",
+        badge1: "🧩 Rental price: 90 THB / day / game",
+        badge2: "⚡ Service area: Bangkok & nearby areas (10:00 - 18:00)",
+        badge3: "🛵 Fast delivery by Lalamove in 1 - 2 hours",
+        heroTitle: "Board Game Rental",
+        heroAccent: "Delivered to Your Door",
+        heroSub: "Choose your favorite games, enter the rental details, get the summary on one page, then send it to Line: @ajgame to confirm the booking.",
+        howTitle: "How to Rent & Delivery",
+        howSub: "Easy booking. Browse the games, choose what you want, and send the summary via Line.",
+        step1Title: "Choose the board games you want",
+        step1Sub: "You can select more than one game from the available list.",
+        step2Title: "Enter start date / rental days",
+        step2Sub: "Fill in the start date and the number of rental days.",
+        step3Title: "Send your Google Maps link",
+        step3Sub: "Used to check delivery fees before confirming the booking.",
+        notice1: "⚠️ Delivery fees for both directions are the customer's responsibility.",
+        notice2: "⚠️ A signed copy of ID card is required for renting board games with AJ.",
+        notice3: "💬 Send the rental summary to Line: @ajgame for final confirmation.",
+        gamesTitle: "Board Game List",
+        gamesSub: "Click each game cover to view more details such as players, play time, and recommended age.",
+        rentTitle: "Rent Now",
+        rentSub: "Select the games you want, fill in the details, and the system will calculate the rental summary automatically.",
+        pickGamesLabel: "Select board games to rent",
+        startDateLabel: "Rental start date",
+        daysLabel: "Number of rental days",
+        daysPlaceholder: "Enter number of days",
+        daysHint: "You can leave it blank for the customer to fill in later.",
+        mapsLabel: "Google Maps link",
+        noIdTitle: "I do not want to provide a copy of my ID card",
+        noIdNote: "Deposit + extra 1,000 THB / game",
+        copyBtn: "Copy message",
+        clearBtn: "Clear form",
+        summaryTitle: "Rental Summary",
+        sumCountLabel: "Selected games",
+        sumRentLabel: "Rental fee",
+        sumDepositLabel: "Total deposit",
+        sumExtraLabel: "Extra deposit (no ID copy)",
+        sumTotalLabel: "Grand total",
+        modalHowTitle: "How to play",
+        scrollRentBtn: "Calculate Rental",
+        openAdminBtn: "Admin",
+        loginTitle: "Admin Login",
+        userLabel: "Username",
+        passLabel: "Password",
+        loginBtn: "Login",
+        adminHeaderTitle: "Manage Board Game List",
+        adminHeaderSub: "Add / edit / delete board game items from this page.",
+        addNewBtn: "+ Add New Game",
+        logoutBtn: "Logout",
+        adminFormTitle: "Add / Edit Game",
+        fNameLabel: "Game name",
+        fDepositLabel: "Deposit (THB)",
+        fImageLabel: "Game image URL",
+        fPlayersLabel: "Players",
+        fTimeLabel: "Play time (mins)",
+        fAgeLabel: "Recommended age",
+        fDescThLabel: "Game description (Thai)",
+        fDescEnLabel: "Game description (English)",
+        fHowThLabel: "How to play (Thai)",
+        fHowEnLabel: "How to play (English)",
+        saveGameBtn: "Save Game",
+        resetFormBtn: "Reset Form",
+        rentPerDay: "90 THB / day",
+        depositPrefix: "Deposit",
+        playersUnit: "players",
+        minsUnit: "mins",
+        agePrefix: "Age",
+        gameUnit: "games",
+        rentalList: "Selected games:",
+        noSelected: "- No games selected -",
+        startDateLine: "Rental start date",
+        daysLine: "Rental days",
+        mapsLine: "Google Maps",
+        noIdSummary: "Customer does not want to provide a copy of ID card",
+        extraDepositSummary: "Extra deposit",
+        perGame1000: "(1,000 THB per game)",
+        rentLine: "Rental fee",
+        depositLine: "Total deposit",
+        totalLine: "Grand total",
+        confirmLine: "Please send this message to Line: @ajgame for final confirmation.",
+        copied: "Copied to clipboard",
+        copyFailed: "Copy failed",
+        loginError: "Incorrect username or password",
+        saveSuccess: "Saved successfully",
+        needName: "Please enter the game name",
+        deleteConfirm: "Delete game",
+        editBtn: "Edit",
+        deleteBtn: "Delete",
+        addEditGame: "Add / Edit Game"
+      }
+    };
+
+    const INITIAL_GAMES = [
+      {id:1,name:"เหลี่ยมสัตว์",name_en:"Animal Square",image:"https://i.postimg.cc/pLWRXJ0p/618815188_1488173483317868_3759553166913810667_n.jpg",deposit:1000,players:"2-5",time:"20-30",age:"8+",desc:"เกมปาร์ตี้วางแผนเบาๆ เล่นง่าย สนุกไว เหมาะกับกลุ่มเพื่อนและครอบครัว",desc_en:"A light strategy party game that is easy to learn and fun for friends and families.",how:"ผลัดกันเลือกและเล่นตามกติกาของเกม ใช้การสังเกตและตัดสินใจให้ไวเพื่อเก็บคะแนนหรือเอาชนะคู่แข่ง",how_en:"Take turns following the game rules, using observation and quick decisions to score points or beat your opponents."},
+      {id:2,name:"เกมค้าเพชร",name_en:"Splendor",image:"https://i.postimg.cc/fRzDTf8F/1631269809337.jpg",deposit:500,players:"2-4",time:"30",age:"10+",desc:"เกมสะสมอัญมณีและซื้อการ์ดพัฒนา แข่งกันสร้างเครื่องยนต์ทรัพยากรให้คะแนนพุ่งไวที่สุด",desc_en:"A gem-collecting engine-building game where players buy development cards and race for prestige points.",how:"ในแต่ละเทิร์น ผู้เล่นเลือกเก็บโทเคนอัญมณี จองการ์ด หรือซื้อการ์ดเพื่อนำส่วนลดสีมาใช้ต่อยอด เป้าหมายคือทำคะแนนให้ถึงก่อนคนอื่น",how_en:"On each turn, players collect gem tokens, reserve cards, or buy cards to gain permanent discounts and reach the target score first."},
+      {id:3,name:"PUBG Battlegrounds เดอะบอร์ดเกม",name_en:"PUBG Battlegrounds: The Board Game",image:"https://i.postimg.cc/rwVMFNhT/74k79f.jpg",deposit:1000,players:"2-4",time:"30-45",age:"12+",desc:"บอร์ดเกมเอาตัวรอดที่ได้อารมณ์เหมือนเกมยิง เลือกเส้นทาง เก็บของ และปะทะกันจนเหลือผู้ชนะ",desc_en:"A survival board game inspired by battle royale shooters where players loot, move, and fight to be the last one standing.",how:"สำรวจแผนที่ เก็บอาวุธและอุปกรณ์ บริหารจังหวะการเคลื่อนที่ และเอาตัวรอดจากวงที่บีบเข้ามา",how_en:"Explore the map, collect weapons and gear, manage movement carefully, and survive the shrinking zone."},
+      {id:4,name:"Dead by Daylight เดอะบอร์ดเกม",name_en:"Dead by Daylight: The Board Game",image:"https://i.postimg.cc/Qxkj3yJ4/Dead_by_Daylight_The_Board_Game_(Thai_version).jpg",deposit:800,players:"3-5",time:"45",age:"14+",desc:"เกมเอาชีวิตรอดแบบ 1 ปะทะหลายคน ฝั่งผู้รอดชีวิตต้องซ่อมเครื่องและหนี ส่วนฆาตกรต้องตามล่าให้ทัน",desc_en:"An asymmetrical survival game where survivors repair generators and escape while the killer hunts them down.",how:"ฝั่งผู้รอดชีวิตร่วมมือกันซ่อมเครื่องปั่นไฟและหลบการตามล่า ส่วนผู้เล่นฝั่งฆาตกรใช้พลังพิเศษไล่จับให้ครบก่อนจะหนีสำเร็จ",how_en:"Survivors cooperate to repair generators and avoid danger, while the killer uses unique powers to catch them before they escape."},
+      {id:5,name:"Zombicide 2nd Edition ภาษาไทย",name_en:"Zombicide 2nd Edition",image:"https://i.postimg.cc/mgLB2ydk/xpqhjq.png",deposit:1200,players:"1-6",time:"60",age:"13+",desc:"เกมร่วมมือกันเอาตัวรอดจากซอมบี้แบบแอ็กชันจัดเต็ม เก็บของ อัปเลเวล และเคลียร์ภารกิจ",desc_en:"A fast-paced cooperative zombie survival game with missions, loot, leveling, and swarms of undead.",how:"ผู้เล่นควบคุมตัวละครหลายตัว ทำภารกิจในแผนที่ เก็บอาวุธ และกำจัดซอมบี้ที่เกิดเพิ่มทุกเทิร์น",how_en:"Players control survivors, complete missions, find better gear, and fight zombies that keep spawning each round."},
+      {id:6,name:"อาถรรย์แห่งอาครัม",name_en:"Arkham Horror",image:"https://i.postimg.cc/YqftHszJ/Arkham_Horror_TGG_box_front_png.webp",deposit:1000,players:"1-6",time:"120",age:"14+",desc:"เกมร่วมมือกันสืบสวนและต่อกรกับสิ่งลี้ลับในจักรวาล Lovecraft เต็มไปด้วยเหตุการณ์ไม่คาดคิด",desc_en:"A cooperative Lovecraftian adventure game full of investigations, monsters, and unexpected events.",how:"ผู้เล่นรับบทนักสืบ เดินทางเก็บเบาะแส สู้มอนสเตอร์ และปิดประตูมิติให้ทันก่อนโลกจะถูกกลืนกิน",how_en:"Players act as investigators, gathering clues, fighting monsters, and sealing gates before the ancient evil overwhelms the world."},
+      {id:7,name:"Harmonies",name_en:"Harmonies",image:"https://i.postimg.cc/vHLGsNt3/v92068.jpg",deposit:600,players:"1-4",time:"30",age:"10+",desc:"เกมจัดวางภูมิประเทศสีสวย สร้างถิ่นอาศัยให้สัตว์และทำคะแนนจากแพตเทิร์นที่ลงตัว",desc_en:"A beautiful spatial puzzle game about building landscapes and creating habitats for animals.",how:"เลือกชิ้นภูมิประเทศมาวางบนกระดานส่วนตัวให้ตรงกับเงื่อนไขของการ์ดสัตว์ ยิ่งวางได้สอดคล้องยิ่งทำคะแนนดี",how_en:"Choose terrain tokens and place them on your board to match animal card patterns for higher scores."},
+      {id:8,name:"ผู้ตรวจการแห่งนอตทิงแฮม 2nd Edition",name_en:"Sheriff of Nottingham 2nd Edition",image:"https://i.postimg.cc/SN7mhvfL/zxqvnk.jpg",deposit:1000,players:"3-6",time:"45-60",age:"14+",desc:"เกม bluff และต่อรองสุดป่วน ลอบขนของ หลอกเจ้าหน้าที่ หรือเนียนให้รอดก็ได้",desc_en:"A bluffing and negotiation game full of smuggling, deception, and risky decisions.",how:"ผลัดกันเป็นนายอำเภอ ตรวจสัมภาระของผู้เล่นคนอื่น ใครจะพูดจริงหรือโกหกต้องวัดใจกันล้วนๆ",how_en:"Players take turns being the sheriff, inspecting others' goods while everyone bluffs and bargains to get contraband through."},
+      {id:9,name:"เจ้าแห่งแวมไพร์ ปะทะ นักล่าปีศาจ",name_en:"Dracula vs Van Helsing",image:"https://i.postimg.cc/28FCDK7n/mx9b5t.jpg",deposit:800,players:"2",time:"20-30",age:"10+",desc:"เกมดวลสองฝ่าย ใช้การคาดเดาและวางจังหวะเพื่อไล่ล่าหรือเอาตัวรอด",desc_en:"A two-player duel of deduction and timing as one side hunts while the other tries to survive.",how:"ผู้เล่นผลัดกันขยับตำแหน่ง ใช้ความสามารถเฉพาะ และอ่านใจคู่ต่อสู้เพื่อคว้าชัย",how_en:"Players alternate actions, use special powers, and read the opponent’s moves to claim victory."},
+      {id:10,name:"7 สิ่งมหัศจรรย์ดวล",name_en:"7 Wonders Duel",image:"https://i.postimg.cc/tCH98jW3/1631180210748.jpg",deposit:500,players:"2",time:"30",age:"10+",desc:"เกมวางแผนอารยธรรมสำหรับ 2 คน แข่งกันชนะด้วยวิทยาศาสตร์ ทหาร หรือคะแนนปลายเกม",desc_en:"A two-player civilization game where you can win by science, military supremacy, or points.",how:"ผู้เล่นผลัดกันเลือกการ์ดจากผังพีระมิดเพื่อสร้างสิ่งปลูกสร้าง เก็บทรัพยากร พัฒนาวิทยาศาสตร์ และบีบคู่แข่งในสนามทหาร",how_en:"Players draft cards from a pyramid display to build structures, collect resources, advance science, and pressure the opponent on the military track."},
+      {id:11,name:"Mind Bug",name_en:"Mind Bug",image:"https://i.postimg.cc/7YMqkWn5/78d01cc5fef605dd0aed2f8ed3513b25.jpg",deposit:800,players:"2",time:"15-25",age:"8+",desc:"เกมการ์ดดวลเร็ว ใช้มอนสเตอร์พลังแปลกและจังหวะชิงไหวชิงพริบ",desc_en:"A fast tactical card duel featuring strange monsters and clever timing.",how:"สลับกันลงการ์ดโจมตี แต่ต้องระวังการใช้ Mind Bug ที่อาจโดนแย่งมอนสเตอร์สำคัญไปกลางคัน",how_en:"Take turns playing creatures and attacking, but watch out for Mind Bug moments that let your opponent steal your key monster."},
+      {id:12,name:"มัฟฟินไทม์",name_en:"Muffin Time",image:"https://i.postimg.cc/dtKJgYr8/i8b5yb.png",deposit:800,players:"2-6",time:"20-40",age:"13+",desc:"เกมปาร์ตี้สายป่วน กติกาพลิกไปมา มีทั้งแกล้งกันและวางกับดักกันฮาๆ",desc_en:"A chaotic party card game filled with pranks, traps, and constantly changing rules.",how:"จั่วและเล่นการ์ดที่มีเอฟเฟกต์แสบๆ ตั้งเงื่อนไขให้ตัวเองชนะก่อนคนอื่น",how_en:"Draw and play wild effect cards, set tricky win conditions, and try to be the first to meet one."},
+      {id:13,name:"สกัล วาง ท้า ดวล",name_en:"Skull",image:"https://i.postimg.cc/nctnNJBK/th_11134207_7r98s_lqigqvql57fo11.jpg",deposit:700,players:"3-6",time:"20-30",age:"10+",desc:"เกมบลัฟฟ์เรียบง่ายแต่คมมาก ต้องกล้าท้าและเดาใจฝ่ายตรงข้ามให้แม่น",desc_en:"A sharp bluffing game that is simple to learn but full of tense mind games.",how:"ผู้เล่นลงแผ่นดอกไม้หรือหัวกะโหลกคว่ำหน้า แล้วเปิดประมูลว่าใครกล้าเปิดได้กี่ใบโดยไม่เจอหัวกะโหลก",how_en:"Players place flowers or skulls face down, then bid on how many they can reveal without hitting a skull."},
+      {id:14,name:"1 คืนปริศนาเกมล่ามนุษย์หมาป่า",name_en:"One Night Ultimate Werewolf",image:"https://i.postimg.cc/zX1q4rKH/SIAMBOARDGAMES_SIAMBOARDGAMESONENIGHTULTIMATEWEREWOLFTH_MKP1790246_1.webp",deposit:700,players:"3-10",time:"10",age:"8+",desc:"เกมปาร์ตี้สายจับผิด เล่นไวมาก บทบาทสลับไปมาและเดายากสุดๆ",desc_en:"A fast social deduction party game with hidden roles, shifting identities, and lots of debate.",how:"แต่ละคนได้รับบทลับและใช้ความสามารถตอนกลางคืน จากนั้นถกเถียงกันตอนกลางวันเพื่อหาว่าใครคือมนุษย์หมาป่า",how_en:"Each player gets a secret role, uses special powers at night, then debates during the day to find the werewolf."},
+      {id:15,name:"เซเลสเทีย",name_en:"Celestia",image:"https://i.postimg.cc/xTS9B2Mq/Celestia_(Thai_version).jpg",deposit:800,players:"2-6",time:"30",age:"8+",desc:"เกมผจญภัยบนเรือเหาะ จะไปต่อหรือโดดลงเก็บแต้มก่อนดี ต้องเสี่ยงอย่างมีสไตล์",desc_en:"A stylish airship adventure game where players decide whether to stay on board or jump off with treasure.",how:"กัปตันต้องทอยและเล่นการ์ดผ่านอุปสรรค ส่วนผู้เล่นคนอื่นตัดสินใจว่าจะอยู่บนเรือต่อหรือรีบลงเก็บสมบัติ",how_en:"The captain rolls and plays cards to overcome obstacles while the other players decide whether to stay aboard or leave with their treasure."},
+      {id:16,name:"ผีถ้วยแก้ว",name_en:"Spirit Board",image:"https://i.postimg.cc/Prkd0jYr/pid_217058.jpg",deposit:700,players:"2-8",time:"15-30",age:"8+",desc:"เกมปาร์ตี้บรรยากาศลึกลับ เล่นง่าย และมีจังหวะชวนลุ้นตลอดเวลา",desc_en:"A spooky party game with simple rules and suspenseful moments throughout.",how:"ทำตามเงื่อนไขการ์ดและกติกาของเกม ใช้การสังเกตและความจำเพื่อเอาตัวรอดหรือเก็บคะแนน",how_en:"Follow the card effects and game rules, using observation and memory to survive or score points."},
+      {id:17,name:"ตลกโยคะ",name_en:"Yoga Party",image:"https://i.postimg.cc/Gh1b6CGm/sg_11134201_7ra40_mbm20h0z6z1x8c.jpg",deposit:700,players:"2-8",time:"15-20",age:"6+",desc:"เกมปาร์ตี้สายฮา ต้องบิดตัวตามท่าโยคะแบบขำๆ เหมาะกับเล่นกลุ่ม",desc_en:"A hilarious party game where players twist into funny yoga poses.",how:"ผู้เล่นทำท่าทางตามการ์ดหรือคำสั่งที่กำหนด ใครพลาดหรือทำไม่ได้อาจเสียเปรียบ",how_en:"Players perform poses or actions shown on the cards, and mistakes can cost them the game."},
+      {id:18,name:"ทีมค้นหา ไฟฉายมหัศจรรย์",name_en:"Spotlight",image:"https://i.postimg.cc/9FjcshZ4/zo.jpg",deposit:700,players:"1-5",time:"15-20",age:"4+",desc:"เกมครอบครัวสำหรับเด็กและผู้ใหญ่ ใช้แผ่นไฟฉายค้นหาของในภาพอย่างสนุก",desc_en:"A family-friendly search game where players use a flashlight effect to find hidden objects.",how:"ส่องไฟฉายกระดาษไปบนฉากเพื่อหาเป้าหมายที่ซ่อนอยู่ แล้วช่วยกันทำภารกิจให้ครบ",how_en:"Move the paper flashlight over the scene to find hidden targets and complete the mission together."},
+      {id:19,name:"ต่าย ตัก ติม",name_en:"Bunny Scoop",image:"https://i.postimg.cc/MK8zgSVx/pic9232481_png.webp",deposit:700,players:"2-4",time:"15-20",age:"6+",desc:"เกมครอบครัวธีมน่ารัก เล่นง่าย จังหวะเร็ว เหมาะกับทุกวัย",desc_en:"A cute and easy family game with quick turns and simple fun for all ages.",how:"ทำตามกติกาของการ์ดหรืออุปกรณ์ในเกม เพื่อเก็บคะแนนหรือไปถึงเป้าหมายก่อน",how_en:"Follow the card effects and game tools to score points or reach the goal first."},
+      {id:20,name:"ชีพจรลงเท้า: เกมแห่งการเดินทาง",name_en:"Itchy Feet: The Travel Game",image:"https://i.postimg.cc/sDR3br7z/DICECUPBOARDGAME_ITCHYFEETTHAIVERSIONBOARDGAME_MKP2064590_1.webp",deposit:800,players:"2-4",time:"45-60",age:"10+",desc:"เกมเดินทางรอบโลก วางแผนเส้นทาง เก็บประสบการณ์ และรับมือเหตุการณ์ชวนป่วน",desc_en:"A globe-trotting travel game about planning routes, gaining experiences, and handling unexpected events.",how:"ใช้การ์ดและแผนที่เพื่อเดินทางไปยังจุดหมายต่างๆ บริหารทรัพยากรและตัดสินใจเลือกเส้นทางที่คุ้มที่สุด",how_en:"Use cards and the map to travel to destinations, manage resources, and choose the most rewarding route."},
+      {id:21,name:"X-Virus",name_en:"X-Virus",image:"https://i.postimg.cc/65NBFXnN/images_19.jpg",deposit:700,players:"2-6",time:"15-25",age:"8+",desc:"เกมการ์ดไวๆ ที่ต้องกำจัดไวรัสและป้องกันการติดเชื้อของตัวเอง",desc_en:"A quick card game about curing viruses and protecting yourself from infection.",how:"ลงการ์ดยา วัคซีน หรือไวรัสใส่ผู้เล่นคนอื่น จัดการไพ่ในมือให้ดีเพื่อเป็นคนสุดท้ายที่รอด",how_en:"Play medicine, vaccine, or virus cards against others and manage your hand wisely to be the last one standing."},
+      {id:22,name:"The Lord of the Rings: Duel for Middle-Earth",name_en:"The Lord of the Rings: Duel for Middle-Earth",image:"https://i.postimg.cc/J4WRSLZL/%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A5%E0%B8%AD%E0%B8%A3_%E0%B8%94%E0%B8%AD%E0%B8%AD%E0%B8%9F%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A3_%E0%B8%87%E0%B8%AA_%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%94%E0%B8%A7%E0%B8%A5%E0%B8%8A_%E0%B8%87%E0%B8%9E_%E0%B8%A0%E0%B8%9E_(The_Lord_of_the_Rings_Duel_for_Middle_earth).jpg",deposit:1000,players:"2",time:"30-45",age:"10+",desc:"เกมดวลสำหรับ 2 คนในธีมลอร์ดออฟเดอะริงส์ วางแผน คุมพื้นที่ และแข่งชิงเงื่อนไขชนะ",desc_en:"A two-player duel set in Middle-earth where players plan carefully, control areas, and race toward victory conditions.",how:"เลือกการ์ดและใช้ความสามารถของฝ่ายตัวเองเพื่อสร้างความได้เปรียบทั้งในแผนที่และเป้าหมายพิเศษของเกม",how_en:"Choose cards and use your faction abilities to gain advantages on the map and pursue special victory goals."}
+    ];
+
+    let games = loadGames();
+    let editingId = null;
+
+    const gamesGrid = document.getElementById("gamesGrid");
+    const pickerGrid = document.getElementById("pickerGrid");
+    const startDate = document.getElementById("startDate");
+    const days = document.getElementById("days");
+    const mapsLink = document.getElementById("mapsLink");
+    const noIdCard = document.getElementById("noIdCard");
+    const summaryNote = document.getElementById("summaryNote");
+
+    const sumCount = document.getElementById("sumCount");
+    const sumRent = document.getElementById("sumRent");
+    const sumDeposit = document.getElementById("sumDeposit");
+    const sumExtra = document.getElementById("sumExtra");
+    const sumTotal = document.getElementById("sumTotal");
+
+    const gameModal = document.getElementById("gameModal");
+    const closeGameModal = document.getElementById("closeGameModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMeta = document.getElementById("modalMeta");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalHow = document.getElementById("modalHow");
+
+    const loginModal = document.getElementById("loginModal");
+    const adminModal = document.getElementById("adminModal");
+
+    function t(key){
+      return TEXT[lang][key] || key;
+    }
+
+    function loadGames(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        try { return JSON.parse(raw); }
+        catch(e){}
+      }
+      return JSON.parse(JSON.stringify(INITIAL_GAMES));
+    }
+
+    function saveGames(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
+    }
+
+    function money(n){
+      const value = Number(n || 0);
+      return lang === "th"
+        ? "฿" + value.toLocaleString("th-TH")
+        : value.toLocaleString("en-US") + " THB";
+    }
+
+    function gameName(game){
+      return lang === "th" ? (game.name || "") : (game.name_en || game.name || "");
+    }
+
+    function gameDesc(game){
+      return lang === "th" ? (game.desc || "-") : (game.desc_en || game.desc || "-");
+    }
+
+    function gameHow(game){
+      return lang === "th" ? (game.how || "-") : (game.how_en || game.how || "-");
+    }
+
+    function selectedGames(){
+      const checked = [...document.querySelectorAll('#pickerGrid input[type="checkbox"]:checked')];
+      const ids = checked.map(el => Number(el.dataset.id));
+      return games.filter(g => ids.includes(g.id));
+    }
+
+    function applyStaticText(){
+      const ids = [
+        "brandTitle","brandSub","badge1","badge2","badge3","heroSub","howTitle","howSub",
+        "step1Title","step1Sub","step2Title","step2Sub","step3Title","step3Sub",
+        "notice1","notice2","gamesTitle","gamesSub","rentTitle","rentSub",
+        "pickGamesLabel","startDateLabel","daysLabel","daysHint","mapsLabel","noIdTitle",
+        "noIdNote","copyBtn","clearBtn","summaryTitle","sumCountLabel","sumRentLabel",
+        "sumDepositLabel","sumExtraLabel","sumTotalLabel","modalHowTitle","scrollRentBtn",
+        "openAdminBtn","loginTitle","userLabel","passLabel","loginBtn","adminHeaderTitle",
+        "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fDepositLabel",
+        "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fDescThLabel","fDescEnLabel",
+        "fHowThLabel","fHowEnLabel","saveGameBtn","resetFormBtn"
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = t(id);
+      });
+
+      document.getElementById("heroTitle").innerHTML = `${t("heroTitle")} <span class="accent" id="heroAccent">${t("heroAccent")}</span>`;
+      document.getElementById("notice3").innerHTML = lang === "th"
+        ? `💬 ส่งสรุปรายการเช่ามาทาง Line: <strong>@ajgame</strong> เพื่อยืนยันอีกครั้ง`
+        : `💬 Send the rental summary to Line: <strong>@ajgame</strong> for final confirmation.`;
+
+      days.placeholder = t("daysPlaceholder");
+      document.documentElement.lang = lang;
+      document.getElementById("btnTh").classList.toggle("active", lang === "th");
+      document.getElementById("btnEn").classList.toggle("active", lang === "en");
+    }
+
+    function renderGames(){
+      gamesGrid.innerHTML = "";
+      games.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.innerHTML = `
+          <div class="cover">
+            <img src="${game.image || ""}" alt="${gameName(game)}" referrerpolicy="no-referrer">
+            <div class="fallback">${gameName(game)}</div>
+          </div>
+          <div class="game-body">
+            <h4 class="game-title">${gameName(game)}</h4>
+            <div class="pill-row">
+              <span class="pill">${t("rentPerDay")}</span>
+              <span class="pill">${t("depositPrefix")} ${money(game.deposit)}</span>
+            </div>
+            <p class="game-desc">${gameDesc(game)}</p>
+          </div>
+        `;
+        const img = card.querySelector("img");
+        const fb = card.querySelector(".fallback");
+        img.onerror = () => { img.style.display = "none"; fb.style.display = "flex"; };
+        card.addEventListener("click", () => openGameModal(game));
+        gamesGrid.appendChild(card);
+      });
+    }
+
+    function renderPicker(){
+      const selectedIds = selectedGames().map(g => g.id);
+      pickerGrid.innerHTML = "";
+      games.forEach(game => {
+        const item = document.createElement("label");
+        item.className = "pick-item";
+        item.innerHTML = `
+          <input type="checkbox" data-id="${game.id}">
+          <div>
+            <div class="pick-title">${gameName(game)}</div>
+            <div class="pick-sub">${t("rentPerDay")} • ${t("depositPrefix")} ${money(game.deposit)}</div>
+          </div>
+          <div class="pick-price">${money(game.deposit)}</div>
+        `;
+        const cb = item.querySelector("input");
+        if(selectedIds.includes(game.id)) cb.checked = true;
+        cb.addEventListener("change", updateSummary);
+        pickerGrid.appendChild(item);
+      });
+    }
+
+    function openGameModal(game){
+      modalImg.src = game.image || "";
+      modalImg.onerror = () => { modalImg.style.display = "none"; };
+      modalImg.onload = () => { modalImg.style.display = "block"; };
+      modalTitle.textContent = gameName(game);
+      modalMeta.innerHTML = `
+        <span class="pill">${game.players || "-"} ${t("playersUnit")}</span>
+        <span class="pill">${game.time || "-"} ${t("minsUnit")}</span>
+        <span class="pill">${t("agePrefix")} ${game.age || "-"}</span>
+        <span class="pill">${t("depositPrefix")} ${money(game.deposit)}</span>
+      `;
+      modalDesc.textContent = gameDesc(game);
+      modalHow.textContent = gameHow(game);
+      gameModal.classList.add("show");
+    }
+
+    function updateSummary(){
+      const picked = selectedGames();
+      const d = Number(days.value || 0);
+      const extra = noIdCard.checked ? picked.length * 1000 : 0;
+      const rent = picked.length * d * RENT_PER_DAY;
+      const deposit = picked.reduce((sum, g) => sum + Number(g.deposit || 0), 0);
+      const total = rent + deposit + extra;
+
+      sumCount.textContent = `${picked.length} ${t("gameUnit")}`;
+      sumRent.textContent = money(rent);
+      sumDeposit.textContent = money(deposit);
+      sumExtra.textContent = money(extra);
+      sumTotal.textContent = money(total);
+
+      let txt = [];
+      txt.push(t("rentalList"));
+      if(picked.length){
+        picked.forEach((g,i)=>txt.push(`${i+1}. ${gameName(g)}`));
+      } else {
+        txt.push(t("noSelected"));
+      }
+      txt.push("");
+      txt.push(`${t("startDateLine")}: ${startDate.value || "-"}`);
+      txt.push(`${t("daysLine")}: ${days.value ? days.value + " " + (lang === "th" ? "วัน" : "days") : "-"}`);
+      txt.push(`${t("mapsLine")}: ${mapsLink.value.trim() || "-"}`);
+      if(noIdCard.checked){
+        txt.push(t("noIdSummary"));
+        txt.push(`${t("extraDepositSummary")}: ${money(extra)} ${t("perGame1000")}`);
+      }
+      txt.push("");
+      txt.push(`${t("rentLine")}: ${money(rent)}`);
+      txt.push(`${t("depositLine")}: ${money(deposit)}`);
+      txt.push(`${t("totalLine")}: ${money(total)}`);
+      txt.push("");
+      txt.push(t("confirmLine"));
+
+      summaryNote.textContent = txt.join("\n");
+    }
+
+    function copySummary(){
+      updateSummary();
+      navigator.clipboard.writeText(summaryNote.textContent).then(()=>{
+        alert(t("copied"));
+      }).catch(()=>{
+        alert(t("copyFailed"));
+      });
+    }
+
+    function clearForm(){
+      document.querySelectorAll('#pickerGrid input[type="checkbox"]').forEach(cb => cb.checked = false);
+      startDate.value = "";
+      days.value = "";
+      mapsLink.value = "";
+      noIdCard.checked = false;
+      updateSummary();
+    }
+
+    function openLogin(){
+      loginModal.classList.add("show");
+      document.getElementById("loginMsg").textContent = "";
+      document.getElementById("adminUser").value = "";
+      document.getElementById("adminPass").value = "";
+    }
+
+    function doLogin(){
+      const u = document.getElementById("adminUser").value.trim();
+      const p = document.getElementById("adminPass").value;
+      if(u === ADMIN_USER && p === ADMIN_PASS){
+        loginModal.classList.remove("show");
+        openAdmin();
+      } else {
+        document.getElementById("loginMsg").textContent = t("loginError");
+      }
+    }
+
+    function openAdmin(){
+      adminModal.classList.add("show");
+      renderAdminList();
+      resetAdminForm();
+    }
+
+    function renderAdminList(){
+      const wrap = document.getElementById("adminList");
+      wrap.innerHTML = "";
+      games.forEach(game => {
+        const row = document.createElement("div");
+        row.className = "admin-item";
+        row.innerHTML = `
+          <div class="admin-thumb">
+            <img src="${game.image || ""}" alt="${gameName(game)}" referrerpolicy="no-referrer">
+          </div>
+          <div>
+            <div style="font-weight:900">${gameName(game)}</div>
+            <div style="color:#666;margin-top:4px">${t("depositPrefix")} ${money(game.deposit)} • ${game.players || "-"} ${t("playersUnit")} • ${game.time || "-"} ${t("minsUnit")}</div>
+          </div>
+          <div class="admin-actions">
+            <button class="small-btn small-edit">${t("editBtn")}</button>
+            <button class="small-btn small-del">${t("deleteBtn")}</button>
+          </div>
+        `;
+        row.querySelector(".small-edit").addEventListener("click", () => editGame(game.id));
+        row.querySelector(".small-del").addEventListener("click", () => deleteGame(game.id));
+        wrap.appendChild(row);
+      });
+    }
+
+    function resetAdminForm(){
+      editingId = null;
+      document.getElementById("adminFormTitle").textContent = t("addEditGame");
+      document.getElementById("fName").value = "";
+      document.getElementById("fDeposit").value = "";
+      document.getElementById("fImage").value = "";
+      document.getElementById("fPlayers").value = "";
+      document.getElementById("fTime").value = "";
+      document.getElementById("fAge").value = "";
+      document.getElementById("fDescTh").value = "";
+      document.getElementById("fDescEn").value = "";
+      document.getElementById("fHowTh").value = "";
+      document.getElementById("fHowEn").value = "";
+    }
+
+    function editGame(id){
+      const game = games.find(g => g.id === id);
+      if(!game) return;
+      editingId = id;
+      document.getElementById("adminFormTitle").textContent = t("editBtn");
+      document.getElementById("fName").value = game.name || "";
+      document.getElementById("fDeposit").value = game.deposit || 0;
+      document.getElementById("fImage").value = game.image || "";
+      document.getElementById("fPlayers").value = game.players || "";
+      document.getElementById("fTime").value = game.time || "";
+      document.getElementById("fAge").value = game.age || "";
+      document.getElementById("fDescTh").value = game.desc || "";
+      document.getElementById("fDescEn").value = game.desc_en || "";
+      document.getElementById("fHowTh").value = game.how || "";
+      document.getElementById("fHowEn").value = game.how_en || "";
+    }
+
+    function saveGameFromForm(){
+      const data = {
+        name: document.getElementById("fName").value.trim(),
+        name_en: document.getElementById("fName").value.trim(),
+        deposit: Number(document.getElementById("fDeposit").value || 0),
+        image: document.getElementById("fImage").value.trim(),
+        players: document.getElementById("fPlayers").value.trim(),
+        time: document.getElementById("fTime").value.trim(),
+        age: document.getElementById("fAge").value.trim(),
+        desc: document.getElementById("fDescTh").value.trim(),
+        desc_en: document.getElementById("fDescEn").value.trim(),
+        how: document.getElementById("fHowTh").value.trim(),
+        how_en: document.getElementById("fHowEn").value.trim()
+      };
+
+      if(!data.name){
+        alert(t("needName"));
+        return;
+      }
+
+      if(editingId){
+        const idx = games.findIndex(g => g.id === editingId);
+        if(idx > -1) games[idx] = { ...games[idx], ...data };
+      } else {
+        const nextId = games.length ? Math.max(...games.map(g => g.id)) + 1 : 1;
+        games.push({ id: nextId, ...data });
+      }
+
+      saveGames();
+      renderAll();
+      renderAdminList();
+      resetAdminForm();
+      alert(t("saveSuccess"));
+    }
+
+    function deleteGame(id){
+      const game = games.find(g => g.id === id);
+      if(!game) return;
+      if(confirm(`${t("deleteConfirm")} "${gameName(game)}" ?`)){
+        games = games.filter(g => g.id !== id);
+        saveGames();
+        renderAll();
+        renderAdminList();
+        resetAdminForm();
+      }
+    }
+
+    function renderAll(){
+      applyStaticText();
+      renderGames();
+      renderPicker();
+      renderAdminList();
+      updateSummary();
+    }
+
+    function setLang(nextLang){
+      lang = nextLang;
+      renderAll();
+    }
+
+    document.getElementById("btnTh").addEventListener("click", () => setLang("th"));
+    document.getElementById("btnEn").addEventListener("click", () => setLang("en"));
+
+    document.getElementById("scrollRentBtn").addEventListener("click", () => {
+      document.getElementById("rentSection").scrollIntoView({ behavior:"smooth" });
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", copySummary);
+    document.getElementById("clearBtn").addEventListener("click", clearForm);
+    startDate.addEventListener("input", updateSummary);
+    days.addEventListener("input", updateSummary);
+    mapsLink.addEventListener("input", updateSummary);
+    noIdCard.addEventListener("change", updateSummary);
+
+    document.getElementById("openAdminBtn").addEventListener("click", openLogin);
+    document.getElementById("closeLoginModal").addEventListener("click", ()=>loginModal.classList.remove("show"));
+    document.getElementById("loginBtn").addEventListener("click", doLogin);
+
+    document.getElementById("closeAdminModal").addEventListener("click", ()=>adminModal.classList.remove("show"));
+    document.getElementById("logoutBtn").addEventListener("click", ()=>adminModal.classList.remove("show"));
+    document.getElementById("addNewBtn").addEventListener("click", resetAdminForm);
+    document.getElementById("saveGameBtn").addEventListener("click", saveGameFromForm);
+    document.getElementById("resetFormBtn").addEventListener("click", resetAdminForm);
+
+    closeGameModal.addEventListener("click", ()=>gameModal.classList.remove("show"));
+    gameModal.addEventListener("click", e => { if(e.target === gameModal) gameModal.classList.remove("show"); });
+    loginModal.addEventListener("click", e => { if(e.target === loginModal) loginModal.classList.remove("show"); });
+    adminModal.addEventListener("click", e => { if(e.target === adminModal) adminModal.classList.remove("show"); });
+
+    renderAll();
+  </script>
+</body>
+</html>
