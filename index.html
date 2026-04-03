@@ -265,6 +265,42 @@
       font-weight:700;
       background:#f5f5f5;
     }
+    .cover.unavailable img{
+      filter:grayscale(.15) brightness(.38);
+    }
+    .cover.unavailable .fallback{
+      background:rgba(15,15,15,.82);
+      color:#fff;
+    }
+    .unavailable-overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      pointer-events:none;
+    }
+    .unavailable-box{
+      background:rgba(10,10,10,.8);
+      border:1px solid rgba(241,197,0,.45);
+      border-radius:18px;
+      color:#ffd21f;
+      text-align:center;
+      padding:16px 14px;
+      width:min(86%, 220px);
+      box-shadow:0 10px 24px rgba(0,0,0,.22);
+      font-weight:900;
+      line-height:1.45;
+    }
+    .unavailable-date{
+      display:block;
+      margin-top:6px;
+      font-size:1.2rem;
+    }
+    .game-card.is-unavailable{
+      border-color:#d8cfcf;
+    }
     .game-body{padding:14px}
     .game-title{
       margin:0 0 8px;
@@ -307,7 +343,20 @@
 
     .picker{
       display:grid; gap:10px;
-      max-height:440px; overflow:auto; padding-right:4px;
+      max-height:440px; overflow:auto; padding:10px;
+      border-radius:18px;
+      background:#fff3f3;
+      border:1px solid #f0d0d0;
+      box-shadow: inset 0 0 0 1px rgba(225,6,0,.03);
+    }
+    .picker::after{
+      content:"↕ Scroll for more";
+      display:block;
+      text-align:center;
+      font-size:.8rem;
+      font-weight:800;
+      color:#a33;
+      padding:4px 0 2px;
     }
     .pick-item{
       display:grid;
@@ -315,8 +364,8 @@
       gap:12px;
       align-items:center;
       padding:12px;
-      background:#fbfbfb;
-      border:1px solid #ededed;
+      background:#ffffff;
+      border:1px solid #efdddd;
       border-radius:16px;
     }
     .pick-item input[type="checkbox"]{
@@ -324,14 +373,94 @@
     }
     .pick-title{font-weight:800}
     .pick-sub{font-size:.88rem;color:#666;margin-top:3px}
-    .pick-price{font-weight:800;color:#111}
+    .pick-price{
+      font-weight:900;
+      color:var(--red-dark);
+      text-align:right;
+      line-height:1.35;
+      white-space:nowrap;
+    }
+    .pick-price small{
+      display:block;
+      color:#666;
+      font-size:.8rem;
+      font-weight:700;
+    }
+    .pick-item.is-disabled{
+      opacity:.72;
+      background:#f5f5f5;
+      border-style:dashed;
+    }
+    .pick-item.is-disabled .pick-title,
+    .pick-item.is-disabled .pick-sub,
+    .pick-item.is-disabled .pick-price{
+      color:#777;
+    }
+
+    .summary-actions{
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px dashed #e6caca;
+    }
+    .summary-confirm{
+      margin-top:12px;
+      color:#5b413d;
+      font-weight:800;
+      line-height:1.6;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:4px;
+    }
+    .summary-confirm .line-handle{
+      color:#16a34a;
+      white-space:nowrap;
+    }
+    .line-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      background:#18b956;
+      color:#fff;
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      box-shadow:0 8px 16px rgba(24,185,86,.18);
+    }
+    .line-btn:hover{
+      filter:brightness(1.03);
+    }
+    .line-icon{
+      width:22px;
+      height:22px;
+      flex:0 0 auto;
+    }
+
+    .sync-box{
+      background:#fff7f7;
+      border:1px solid #f1d4d4;
+      border-radius:18px;
+      padding:16px;
+      margin-bottom:16px;
+    }
+    .sync-box h4{
+      margin:0 0 12px;
+    }
+    .sync-help{
+      color:#666;
+      line-height:1.6;
+      font-size:.92rem;
+      margin-top:8px;
+    }
 
     .field{margin-bottom:14px}
     .field label{
       display:block; margin-bottom:8px; font-weight:800;
       color:#111;
     }
-    .field input,.field textarea{
+    .field input,.field textarea,.field select{
       width:100%;
       border:1px solid #e6e6e6;
       background:#fff;
@@ -339,7 +468,7 @@
       padding:13px 14px;
       outline:none;
     }
-    .field input:focus,.field textarea:focus{
+    .field input:focus,.field textarea:focus,.field select:focus{
       border-color:#efb0b0;
       box-shadow:0 0 0 3px rgba(225,6,0,.08);
     }
@@ -599,8 +728,9 @@
         <div class="card">
           <div class="notice" id="notice1">⚠️ ค่าจัดส่งลูกค้าเป็นผู้รับผิดชอบทั้งไปและกลับ</div>
           <div class="notice" id="notice2">⚠️ เอกสารที่ใช้สำเนาบัตรประชาชน</div>
+          <div class="notice" id="noticeLoss">⚠️ กรณีอุปกรณ์สูญหายหรือเสียหายจนไม่สามารถใช้งาน/ทดแทนแยกชิ้นได้ ทางร้านขอสงวนสิทธิ์ไม่คืนเงินประกัน และถือเป็นการซื้อขาดสินค้าชุดนั้น 100% โดยทางร้านจะจัดส่งบอร์ดเกมชุดดังกล่าวให้แก่ลูกค้าครับ</div>
           <div class="notice" style="background:#fff3f3;border-color:#efcfcf" id="notice3">
-            💬 ส่งสรุปรายการเช่ามาทาง Line: <strong>@ajgame</strong> เพื่อยืนยันอีกครั้ง
+            💬 ส่งสรุปรายการเช่ามาทาง Line: <strong style="white-space:nowrap;color:#16a34a">@ajgame</strong> เพื่อยืนยันอีกครั้ง
           </div>
         </div>
       </div>
@@ -649,10 +779,6 @@
             </label>
           </div>
 
-          <div class="btn-row">
-            <button class="btn btn-primary" id="copyBtn">คัดลอกข้อความ</button>
-            <button class="btn btn-secondary" id="clearBtn">ล้างข้อมูล</button>
-          </div>
         </div>
 
         <div class="card">
@@ -686,6 +812,21 @@
           </div>
 
           <div class="summary-note" id="summaryNote"></div>
+
+          <div class="summary-actions">
+            <div class="btn-row">
+              <a class="line-btn" id="lineBtn" href="https://lin.ee/P2mp0RK" target="_blank" rel="noopener noreferrer">
+                <svg class="line-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <path fill="currentColor" d="M24 5C13.5 5 5 11.9 5 20.4c0 7.6 6.7 14 15.8 15.2.6.1 1.5.4 1.7 1 .2.5.1 1.3.1 1.9l-.3 2.3c-.1.7-.4 2.6 2.3 1.4 2.7-1.1 14.4-8.5 19.6-14.6 3.6-3.9 5.3-7.9 5.3-12.2C43 11.9 34.5 5 24 5Z"/>
+                  <path fill="#fff" d="M15.2 16.3h-2.7c-.3 0-.5.2-.5.5v13.7c0 .3.2.5.5.5h2.7c.3 0 .5-.2.5-.5V16.8c0-.3-.2-.5-.5-.5Zm20.3 0H33c-.3 0-.5.2-.5.5v8.1l-6.2-8.4-.1-.1h-2.6c-.3 0-.5.2-.5.5v13.7c0 .3.2.5.5.5h2.6c.3 0 .5-.2.5-.5v-8.1l6.2 8.4c.1.1.3.2.4.2h2.5c.3 0 .5-.2.5-.5V16.8c0-.3-.2-.5-.5-.5Zm-13.5 11.1h-4.7V16.8c0-.3-.2-.5-.5-.5h-2.6c-.3 0-.5.2-.5.5v13.7c0 .1 0 .3.1.4 0 .1.2.1.4.1H22c.3 0 .5-.2.5-.5v-2.6c0-.3-.2-.5-.5-.5Zm13.6-8.5c.3 0 .5-.2.5-.5v-2.6c0-.3-.2-.5-.5-.5h-8.1c-.1 0-.3 0-.4.1-.1.1-.1.2-.1.4v13.7c0 .1 0 .3.1.4.1.1.2.1.4.1h8.1c.3 0 .5-.2.5-.5v-2.6c0-.3-.2-.5-.5-.5h-5v-2.3h5c.3 0 .5-.2.5-.5v-2.6c0-.3-.2-.5-.5-.5h-5v-2.3h5Z"/>
+                </svg>
+                <span id="lineBtnText">ส่งข้อความทาง Line</span>
+              </a>
+              <button class="btn btn-primary" id="copyBtn">คัดลอกข้อความ</button>
+              <button class="btn btn-secondary" id="clearBtn">ล้างข้อมูล</button>
+            </div>
+            <div class="summary-confirm" id="summaryConfirm">แล้วส่งไปที่ Line: <span class="line-handle">@ajgame</span> เพื่อยืนยัน</div>
+          </div>
         </div>
       </div>
     </section>
@@ -745,6 +886,27 @@
           </div>
         </div>
 
+        <div class="sync-box">
+          <h4 id="syncTitle">GitHub Gist Sync</h4>
+          <div class="form-grid">
+            <div class="field">
+              <label id="gistIdLabel">Gist ID</label>
+              <input type="text" id="gistIdInput" placeholder="Paste your Gist ID">
+            </div>
+            <div class="field">
+              <label id="gistTokenLabel">GitHub Token (optional for load, required for upload)</label>
+              <input type="password" id="gistTokenInput" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top:0">
+            <button class="btn btn-secondary" id="loadGistBtn">ดึงข้อมูลจาก Gist</button>
+            <button class="btn btn-primary" id="saveGistBtn">อัปโหลดไป Gist</button>
+            <button class="btn btn-secondary" id="saveLocalBtn">บันทึกลงเครื่องนี้</button>
+          </div>
+          <div class="sync-help" id="syncHelp">ฝัง Gist ID ไว้ใน HTML ได้เลย แล้วค่อยใส่ Token เมื่อต้องการดึงหรืออัปโหลดข้อมูล รายการเกมจะถูกเก็บเป็น JSON ใน Gist เพื่อ sync ข้ามเครื่องได้ง่ายขึ้น</div>
+          <div id="gistStatus" style="margin-top:10px;font-weight:800"></div>
+        </div>
+
         <div class="card" style="margin-bottom:16px">
           <h4 style="margin:0 0 12px" id="adminFormTitle">เพิ่ม / แก้ไขเกม</h4>
           <div class="form-grid">
@@ -771,6 +933,17 @@
             <div class="field">
               <label id="fAgeLabel">อายุแนะนำ</label>
               <input type="text" id="fAge" placeholder="เช่น 10+">
+            </div>
+            <div class="field">
+              <label id="fUnavailableLabel">สถานะการให้บริการ</label>
+              <select id="fUnavailable">
+                <option value="0">พร้อมให้บริการ</option>
+                <option value="1">ยังไม่พร้อมให้บริการ</option>
+              </select>
+            </div>
+            <div class="field">
+              <label id="fAvailableDateLabel">วันที่พร้อมให้บริการ</label>
+              <input type="date" id="fAvailableDate">
             </div>
             <div class="field">
               <label id="fDescThLabel">คำอธิบายเกม (ไทย)</label>
@@ -802,7 +975,10 @@
 
   <script>
     const RENT_PER_DAY = 90;
-    const STORAGE_KEY = "aj_boardgame_admin_v17_bilingual";
+    const STORAGE_KEY = "aj_boardgame_admin_v18_bilingual";
+    const GIST_CONFIG_KEY = "aj_boardgame_gist_config_v1";
+    const GIST_FILENAME = "aj-boardgame-games.json";
+    const DEFAULT_GIST_ID = "PASTE_GIST_ID_HERE";
     const ADMIN_USER = "ajgame";
     const ADMIN_PASS = "T@nose@2026";
 
@@ -828,6 +1004,7 @@
         step3Sub: "ใช้สำหรับเช็กค่าส่งไป-กลับก่อนยืนยันการจอง",
         notice1: "⚠️ ค่าจัดส่งลูกค้าเป็นผู้รับผิดชอบทั้งไปและกลับ",
         notice2: "⚠️ เอกสารที่ใช้สำเนาบัตรประชาชน",
+        noticeLoss: "⚠️ กรณีอุปกรณ์สูญหายหรือเสียหายจนไม่สามารถใช้งาน/ทดแทนแยกชิ้นได้ ทางร้านขอสงวนสิทธิ์ไม่คืนเงินประกัน และถือเป็นการซื้อขาดสินค้าชุดนั้น 100% โดยทางร้านจะจัดส่งบอร์ดเกมชุดดังกล่าวให้แก่ลูกค้าครับ",
         notice3: "💬 ส่งสรุปรายการเช่ามาทาง Line: @ajgame เพื่อยืนยันอีกครั้ง",
         gamesTitle: "รายการบอร์ดเกม",
         gamesSub: "คลิกที่รูปเกมเพื่อดูรายละเอียดเพิ่มเติม เช่น จำนวนผู้เล่น เวลาเล่น และอายุที่แนะนำ",
@@ -873,6 +1050,21 @@
         fHowEnLabel: "How to play (English)",
         saveGameBtn: "บันทึกเกม",
         resetFormBtn: "ล้างฟอร์ม",
+        fUnavailableLabel: "สถานะการให้บริการ",
+        fAvailableDateLabel: "วันที่พร้อมให้บริการ",
+        availableNow: "พร้อมให้บริการ",
+        unavailableNow: "ยังไม่พร้อมให้บริการ",
+        availableOn: "พร้อมวันที่",
+        lineBtnText: "ส่งข้อความทาง Line",
+        summaryConfirm: "แล้วส่งไปที่ Line: <span class=\"line-handle\">@ajgame</span> เพื่อยืนยัน",
+        syncTitle: "GitHub Gist Sync",
+        gistIdLabel: "Gist ID",
+        gistTokenLabel: "GitHub Token (ถ้าแค่อ่าน public gist จะไม่ใส่ก็ได้)",
+        loadGistBtn: "ดึงข้อมูลจาก Gist",
+        saveGistBtn: "อัปโหลดไป Gist",
+        saveLocalBtn: "บันทึกลงเครื่องนี้",
+        syncHelp: "ฝัง Gist ID ไว้ใน HTML ได้เลย แล้วค่อยใส่ Token เมื่อต้องการดึงหรืออัปโหลดข้อมูล รายการเกมจะถูกเก็บเป็น JSON ใน Gist เพื่อ sync ข้ามเครื่องได้ง่ายขึ้น",
+
         rentPerDay: "90 บาท / วัน",
         depositPrefix: "ค่าประกัน",
         playersUnit: "ผู้เล่น",
@@ -896,6 +1088,11 @@
         copyFailed: "❌ คัดลอกไม่สำเร็จ",
         loginError: "username หรือ password ไม่ถูกต้อง",
         saveSuccess: "บันทึกข้อมูลเรียบร้อย",
+        gistLoadSuccess: "ดึงข้อมูลจาก Gist สำเร็จ",
+        gistSaveSuccess: "อัปโหลดข้อมูลไป Gist สำเร็จ",
+        gistNeedId: "กรุณาใส่ Gist ID ก่อน",
+        gistNeedToken: "กรุณาใส่ GitHub Token ก่อนอัปโหลด",
+        gistError: "ไม่สามารถเชื่อมต่อ Gist ได้",
         needName: "กรุณาใส่ชื่อเกม",
         deleteConfirm: "ลบเกม",
         editBtn: "แก้ไข",
@@ -920,7 +1117,8 @@
         step3Title: "Send your Google Maps link",
         step3Sub: "Used to check delivery fees before confirming the booking.",
         notice1: "⚠️ Delivery fees for both directions are the customer's responsibility.",
-        notice2: "⚠️ Required a copy of the passport",
+        notice2: "⚠️ Required: a copy of ID card or passport",
+        noticeLoss: "⚠️ If any component is lost or damaged beyond separate replacement or normal use, the shop reserves the right to keep the full deposit. The case will be treated as a 100% purchase of that board game set, and the set will be delivered to the customer.",
         notice3: "💬 Send the rental summary to Line: @ajgame for final confirmation.",
         gamesTitle: "Board Game List",
         gamesSub: "Click each game cover to view more details such as players, play time, and recommended age.",
@@ -966,6 +1164,21 @@
         fHowEnLabel: "How to play (English)",
         saveGameBtn: "Save Game",
         resetFormBtn: "Reset Form",
+        fUnavailableLabel: "Service status",
+        fAvailableDateLabel: "Available date",
+        availableNow: "Available now",
+        unavailableNow: "Not ready yet",
+        availableOn: "Available on",
+        lineBtnText: "Send message via Line",
+        summaryConfirm: "Then send it to Line: <span class=\"line-handle\">@ajgame</span> to confirm",
+        syncTitle: "GitHub Gist Sync",
+        gistIdLabel: "Gist ID",
+        gistTokenLabel: "GitHub Token (optional for load, required for upload)",
+        loadGistBtn: "Load from Gist",
+        saveGistBtn: "Upload to Gist",
+        saveLocalBtn: "Save to this device",
+        syncHelp: "You can hardcode the Gist ID in the HTML, then enter a token only when you want to load or upload. The game list is stored as JSON in the Gist for easy sync across devices.",
+
         rentPerDay: "90 THB / day",
         depositPrefix: "Deposit",
         playersUnit: "players",
@@ -989,6 +1202,11 @@
         copyFailed: "❌ Copy failed",
         loginError: "Incorrect username or password",
         saveSuccess: "Saved successfully",
+        gistLoadSuccess: "Loaded data from Gist successfully",
+        gistSaveSuccess: "Uploaded data to Gist successfully",
+        gistNeedId: "Please enter a Gist ID first",
+        gistNeedToken: "Please enter a GitHub token before uploading",
+        gistError: "Unable to connect to Gist",
         needName: "Please enter the game name",
         deleteConfirm: "Delete game",
         editBtn: "Edit",
@@ -1014,7 +1232,6 @@
       {id:14,name:"1 คืนปริศนาเกมล่ามนุษย์หมาป่า",name_en:"One Night Ultimate Werewolf",image:"https://i.postimg.cc/zX1q4rKH/SIAMBOARDGAMES_SIAMBOARDGAMESONENIGHTULTIMATEWEREWOLFTH_MKP1790246_1.webp",deposit:700,players:"3-10",time:"10",age:"8+",desc:"เกมปาร์ตี้สายจับผิด เล่นไวมาก บทบาทสลับไปมาและเดายากสุดๆ",desc_en:"A fast social deduction party game with hidden roles, shifting identities, and lots of debate.",how:"แต่ละคนได้รับบทลับและใช้ความสามารถตอนกลางคืน จากนั้นถกเถียงกันตอนกลางวันเพื่อหาว่าใครคือมนุษย์หมาป่า",how_en:"Each player gets a secret role, uses special powers at night, then debates during the day to find the werewolf."},
       {id:15,name:"เซเลสเทีย",name_en:"Celestia",image:"https://i.postimg.cc/xTS9B2Mq/Celestia_(Thai_version).jpg",deposit:1300,players:"2-6",time:"30",age:"8+",desc:"เกมผจญภัยบนเรือเหาะ จะไปต่อหรือโดดลงเก็บแต้มก่อนดี ต้องเสี่ยงอย่างมีสไตล์",desc_en:"A stylish airship adventure game where players decide whether to stay on board or jump off with treasure.",how:"กัปตันต้องทอยและเล่นการ์ดผ่านอุปสรรค ส่วนผู้เล่นคนอื่นตัดสินใจว่าจะอยู่บนเรือต่อหรือรีบลงเก็บสมบัติ",how_en:"The captain rolls and plays cards to overcome obstacles while the other players decide whether to stay aboard or leave with their treasure."},
       {id:16,name:"ผีถ้วยแก้ว",name_en:"Spirit Board",image:"https://i.postimg.cc/Prkd0jYr/pid_217058.jpg",deposit:900,players:"2-8",time:"15-30",age:"8+",desc:"เกมปาร์ตี้บรรยากาศลึกลับ เล่นง่าย และมีจังหวะชวนลุ้นตลอดเวลา",desc_en:"A spooky party game with simple rules and suspenseful moments throughout.",how:"ทำตามเงื่อนไขการ์ดและกติกาของเกม ใช้การสังเกตและความจำเพื่อเอาตัวรอดหรือเก็บคะแนน",how_en:"Follow the card effects and game rules, using observation and memory to survive or score points."},
-      {id:17,name:"ตลกโยคะ",name_en:"Yoga Party",image:"https://i.postimg.cc/Gh1b6CGm/sg_11134201_7ra40_mbm20h0z6z1x8c.jpg",deposit:500,players:"2-8",time:"15-20",age:"6+",desc:"เกมปาร์ตี้สายฮา ต้องบิดตัวตามท่าโยคะแบบขำๆ เหมาะกับเล่นกลุ่ม",desc_en:"A hilarious party game where players twist into funny yoga poses.",how:"ผู้เล่นทำท่าทางตามการ์ดหรือคำสั่งที่กำหนด ใครพลาดหรือทำไม่ได้อาจเสียเปรียบ",how_en:"Players perform poses or actions shown on the cards, and mistakes can cost them the game."},
       {id:18,name:"ทีมค้นหา ไฟฉายมหัศจรรย์",name_en:"Spotlight",image:"https://i.postimg.cc/9FjcshZ4/zo.jpg",deposit:1000,players:"1-5",time:"15-20",age:"4+",desc:"เกมครอบครัวสำหรับเด็กและผู้ใหญ่ ใช้แผ่นไฟฉายค้นหาของในภาพอย่างสนุก",desc_en:"A family-friendly search game where players use a flashlight effect to find hidden objects.",how:"ส่องไฟฉายกระดาษไปบนฉากเพื่อหาเป้าหมายที่ซ่อนอยู่ แล้วช่วยกันทำภารกิจให้ครบ",how_en:"Move the paper flashlight over the scene to find hidden targets and complete the mission together."},
       {id:19,name:"ต่าย ตัก ติม",name_en:"Bunny Scoop",image:"https://i.postimg.cc/MK8zgSVx/pic9232481_png.webp",deposit:1500,players:"2-4",time:"15-20",age:"6+",desc:"เกมครอบครัวธีมน่ารัก เล่นง่าย จังหวะเร็ว เหมาะกับทุกวัย",desc_en:"A cute and easy family game with quick turns and simple fun for all ages.",how:"ทำตามกติกาของการ์ดหรืออุปกรณ์ในเกม เพื่อเก็บคะแนนหรือไปถึงเป้าหมายก่อน",how_en:"Follow the card effects and game tools to score points or reach the goal first."},
       {id:20,name:"ชีพจรลงเท้า: เกมแห่งการเดินทาง",name_en:"Itchy Feet: The Travel Game",image:"https://i.postimg.cc/sDR3br7z/DICECUPBOARDGAME_ITCHYFEETTHAIVERSIONBOARDGAME_MKP2064590_1.webp",deposit:900,players:"2-4",time:"45-60",age:"10+",desc:"เกมเดินทางรอบโลก วางแผนเส้นทาง เก็บประสบการณ์ และรับมือเหตุการณ์ชวนป่วน",desc_en:"A globe-trotting travel game about planning routes, gaining experiences, and handling unexpected events.",how:"ใช้การ์ดและแผนที่เพื่อเดินทางไปยังจุดหมายต่างๆ บริหารทรัพยากรและตัดสินใจเลือกเส้นทางที่คุ้มที่สุด",how_en:"Use cards and the map to travel to destinations, manage resources, and choose the most rewarding route."},
@@ -1054,16 +1271,49 @@
       return TEXT[lang][key] || key;
     }
 
+    function sanitizeGames(list){
+      return (Array.isArray(list) ? list : [])
+        .filter(game => {
+          const thName = (game.name || "").trim();
+          const enName = (game.name_en || "").trim();
+          return thName !== "ตลกโยคะ" && enName !== "Yoga Party";
+        })
+        .map((game, index) => ({
+          id: Number(game.id) || index + 1,
+          name: game.name || "",
+          name_en: game.name_en || game.name || "",
+          image: game.image || "",
+          deposit: Number(game.deposit || 0),
+          players: game.players || "",
+          time: game.time || "",
+          age: game.age || "",
+          desc: game.desc || "",
+          desc_en: game.desc_en || game.desc || "",
+          how: game.how || "",
+          how_en: game.how_en || game.how || "",
+          unavailable: Boolean(game.unavailable),
+          available_date: game.available_date || ""
+        }));
+    }
+
+    function normalizeGameIds(){
+      games = games.map((game, index) => ({ ...game, id: index + 1 }));
+    }
+
     function loadGames(){
       const raw = localStorage.getItem(STORAGE_KEY);
       if(raw){
-        try { return JSON.parse(raw); }
+        try { 
+          const parsed = sanitizeGames(JSON.parse(raw));
+          return parsed.length ? parsed : sanitizeGames(JSON.parse(JSON.stringify(INITIAL_GAMES)));
+        }
         catch(e){}
       }
-      return JSON.parse(JSON.stringify(INITIAL_GAMES));
+      return sanitizeGames(JSON.parse(JSON.stringify(INITIAL_GAMES)));
     }
 
     function saveGames(){
+      normalizeGameIds();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(games));
     }
 
@@ -1086,6 +1336,21 @@
       return lang === "th" ? (game.how || "-") : (game.how_en || game.how || "-");
     }
 
+    function formatAvailableDate(dateStr){
+      if(!dateStr) return "";
+      const [y,m,d] = String(dateStr).split("-");
+      if(!y || !m || !d) return dateStr;
+      return lang === "th" ? `${d}/${m}/${y}` : `${y}-${m}-${d}`;
+    }
+
+    function availabilityMarkup(game){
+      if(!game.unavailable) return "";
+      const dateLine = game.available_date
+        ? `<span class="unavailable-date">${lang === "th" ? "พร้อมวันที่" : "Available on"} ${formatAvailableDate(game.available_date)}</span>`
+        : "";
+      return `<div class="unavailable-overlay"><div class="unavailable-box">⚠️ ${lang === "th" ? "ยังไม่พร้อมให้บริการ" : "Not ready yet"}${dateLine}</div></div>`;
+    }
+
     function selectedGames(){
       const checked = [...document.querySelectorAll('#pickerGrid input[type="checkbox"]:checked')];
       const ids = checked.map(el => Number(el.dataset.id));
@@ -1096,14 +1361,14 @@
       const ids = [
         "brandTitle","brandSub","badge1","badge2","badge3","heroSub","howTitle","howSub",
         "step1Title","step1Sub","step2Title","step2Sub","step3Title","step3Sub",
-        "notice1","notice2","gamesTitle","gamesSub","rentTitle","rentSub",
+        "notice1","notice2","noticeLoss","gamesTitle","gamesSub","rentTitle","rentSub",
         "pickGamesLabel","startDateLabel","daysLabel","daysHint","mapsLabel","noIdTitle",
         "noIdNote","copyBtn","clearBtn","summaryTitle","sumCountLabel","sumRentLabel",
         "sumDepositLabel","sumExtraLabel","sumTotalLabel","modalHowTitle","scrollRentBtn",
         "openAdminBtn","loginTitle","userLabel","passLabel","loginBtn","adminHeaderTitle",
         "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fDepositLabel",
-        "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fDescThLabel","fDescEnLabel",
-        "fHowThLabel","fHowEnLabel","saveGameBtn","resetFormBtn"
+        "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fUnavailableLabel","fAvailableDateLabel","fDescThLabel","fDescEnLabel",
+        "fHowThLabel","fHowEnLabel","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm"
       ];
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1112,8 +1377,12 @@
 
       document.getElementById("heroTitle").innerHTML = `${t("heroTitle")} <span class="accent" id="heroAccent">${t("heroAccent")}</span>`;
       document.getElementById("notice3").innerHTML = lang === "th"
-        ? `💬 ส่งสรุปรายการเช่ามาทาง Line: <strong>@ajgame</strong> เพื่อยืนยันอีกครั้ง`
-        : `💬 Send the rental summary to Line: <strong>@ajgame</strong> for final confirmation.`;
+        ? `💬 ส่งสรุปรายการเช่ามาทาง Line: <strong style="white-space:nowrap;color:#16a34a">@ajgame</strong> เพื่อยืนยันอีกครั้ง`
+        : `💬 Send the rental summary to Line: <strong style="white-space:nowrap;color:#16a34a">@ajgame</strong> for final confirmation.`;
+      const summaryConfirmEl = document.getElementById("summaryConfirm");
+      if(summaryConfirmEl) summaryConfirmEl.innerHTML = t("summaryConfirm");
+      const lineBtnTextEl = document.getElementById("lineBtnText");
+      if(lineBtnTextEl) lineBtnTextEl.textContent = t("lineBtnText");
 
       days.placeholder = t("daysPlaceholder");
       document.documentElement.lang = lang;
@@ -1125,11 +1394,12 @@
       gamesGrid.innerHTML = "";
       games.forEach(game => {
         const card = document.createElement("div");
-        card.className = "game-card";
+        card.className = `game-card${game.unavailable ? " is-unavailable" : ""}`;
         card.innerHTML = `
-          <div class="cover">
+          <div class="cover${game.unavailable ? " unavailable" : ""}">
             <img src="${game.image || ""}" alt="${gameName(game)}" referrerpolicy="no-referrer">
             <div class="fallback">${gameName(game)}</div>
+            ${availabilityMarkup(game)}
           </div>
           <div class="game-body">
             <h4 class="game-title">${gameName(game)}</h4>
@@ -1153,17 +1423,24 @@
       pickerGrid.innerHTML = "";
       games.forEach(game => {
         const item = document.createElement("label");
-        item.className = "pick-item";
+        item.className = `pick-item${game.unavailable ? " is-disabled" : ""}`;
+        const statusText = game.unavailable
+          ? `${t("unavailableNow")}${game.available_date ? ` • ${t("availableOn")} ${formatAvailableDate(game.available_date)}` : ""}`
+          : t("availableNow");
+        const statusColor = game.unavailable ? "#b91c1c" : "#15803d";
         item.innerHTML = `
-          <input type="checkbox" data-id="${game.id}">
+          <input type="checkbox" data-id="${game.id}" ${game.unavailable ? "disabled" : ""}>
           <div>
             <div class="pick-title">${gameName(game)}</div>
-            <div class="pick-sub">${t("rentPerDay")} • ${t("depositPrefix")} ${money(game.deposit)}</div>
+            <div class="pick-sub" style="color:${statusColor};font-weight:800;">${statusText}</div>
           </div>
-          <div class="pick-price">${money(game.deposit)}</div>
+          <div class="pick-price">
+            ${t("rentPerDay")}
+            <small>${t("depositPrefix")} ${money(game.deposit)}</small>
+          </div>
         `;
         const cb = item.querySelector("input");
-        if(selectedIds.includes(game.id)) cb.checked = true;
+        if(selectedIds.includes(game.id) && !game.unavailable) cb.checked = true;
         cb.addEventListener("change", updateSummary);
         pickerGrid.appendChild(item);
       });
@@ -1281,6 +1558,7 @@
           <div>
             <div style="font-weight:900">${gameName(game)}</div>
             <div style="color:#666;margin-top:4px">${t("depositPrefix")} ${money(game.deposit)} • ${game.players || "-"} ${t("playersUnit")} • ${game.time || "-"} ${t("minsUnit")}</div>
+            <div style="color:${game.unavailable ? "#a11" : "#216b2f"};margin-top:6px;font-weight:800">${game.unavailable ? t("unavailableNow") + (game.available_date ? " • " + t("availableOn") + " " + formatAvailableDate(game.available_date) : "") : t("availableNow")}</div>
           </div>
           <div class="admin-actions">
             <button class="small-btn small-edit">${t("editBtn")}</button>
@@ -1302,6 +1580,8 @@
       document.getElementById("fPlayers").value = "";
       document.getElementById("fTime").value = "";
       document.getElementById("fAge").value = "";
+      document.getElementById("fUnavailable").value = "0";
+      document.getElementById("fAvailableDate").value = "";
       document.getElementById("fDescTh").value = "";
       document.getElementById("fDescEn").value = "";
       document.getElementById("fHowTh").value = "";
@@ -1319,6 +1599,8 @@
       document.getElementById("fPlayers").value = game.players || "";
       document.getElementById("fTime").value = game.time || "";
       document.getElementById("fAge").value = game.age || "";
+      document.getElementById("fUnavailable").value = game.unavailable ? "1" : "0";
+      document.getElementById("fAvailableDate").value = game.available_date || "";
       document.getElementById("fDescTh").value = game.desc || "";
       document.getElementById("fDescEn").value = game.desc_en || "";
       document.getElementById("fHowTh").value = game.how || "";
@@ -1334,6 +1616,8 @@
         players: document.getElementById("fPlayers").value.trim(),
         time: document.getElementById("fTime").value.trim(),
         age: document.getElementById("fAge").value.trim(),
+        unavailable: document.getElementById("fUnavailable").value === "1",
+        available_date: document.getElementById("fAvailableDate").value || "",
         desc: document.getElementById("fDescTh").value.trim(),
         desc_en: document.getElementById("fDescEn").value.trim(),
         how: document.getElementById("fHowTh").value.trim(),
@@ -1371,12 +1655,119 @@
         resetAdminForm();
       }
     }
+    function loadGistConfig(){
+      try{
+        return JSON.parse(localStorage.getItem(GIST_CONFIG_KEY) || "{}");
+      }catch(e){
+        return {};
+      }
+    }
+
+    function saveGistConfig(){
+      const gistId = document.getElementById("gistIdInput").value.trim();
+      localStorage.setItem(GIST_CONFIG_KEY, JSON.stringify({ gistId }));
+    }
+
+    function setGistStatus(message, isError = false){
+      const el = document.getElementById("gistStatus");
+      if(!el) return;
+      el.textContent = message || "";
+      el.style.color = isError ? "#b30000" : "#216b2f";
+    }
+
+    function populateGistFields(){
+      const cfg = loadGistConfig();
+      const gistIdInput = document.getElementById("gistIdInput");
+      const gistTokenInput = document.getElementById("gistTokenInput");
+      if(gistIdInput && !gistIdInput.value) gistIdInput.value = cfg.gistId || (DEFAULT_GIST_ID !== "PASTE_GIST_ID_HERE" ? DEFAULT_GIST_ID : "");
+      if(gistTokenInput && gistTokenInput.dataset.keep !== "1") gistTokenInput.value = "";
+    }
+
+    async function loadFromGist(){
+      const gistId = document.getElementById("gistIdInput").value.trim() || (DEFAULT_GIST_ID !== "PASTE_GIST_ID_HERE" ? DEFAULT_GIST_ID : "");
+      const tokenInput = document.getElementById("gistTokenInput");
+      const token = tokenInput.value.trim();
+      tokenInput.dataset.keep = token ? "1" : "0";
+      if(!gistId){
+        setGistStatus(t("gistNeedId"), true);
+        return;
+      }
+      setGistStatus("Loading...");
+      try{
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, { headers });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const gist = await res.json();
+        const file = gist.files?.[GIST_FILENAME] || Object.values(gist.files || {})[0];
+        if(!file?.content) throw new Error("No file content found");
+        const parsed = sanitizeGames(JSON.parse(file.content));
+        if(!parsed.length) throw new Error("No valid games found");
+        games = parsed;
+        saveGames();
+        saveGistConfig();
+        renderAll();
+        setGistStatus(t("gistLoadSuccess"));
+      }catch(error){
+        console.error(error);
+        setGistStatus(`${t("gistError")} (${error.message})`, true);
+      }
+    }
+
+    async function saveToGist(){
+      const gistId = document.getElementById("gistIdInput").value.trim() || (DEFAULT_GIST_ID !== "PASTE_GIST_ID_HERE" ? DEFAULT_GIST_ID : "");
+      const tokenInput = document.getElementById("gistTokenInput");
+      const token = tokenInput.value.trim();
+      tokenInput.dataset.keep = token ? "1" : "0";
+      if(!gistId){
+        setGistStatus(t("gistNeedId"), true);
+        return;
+      }
+      if(!token){
+        setGistStatus(t("gistNeedToken"), true);
+        return;
+      }
+      setGistStatus("Uploading...");
+      try{
+        saveGames();
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        };
+        const body = {
+          files: {
+            [GIST_FILENAME]: {
+              content: JSON.stringify(games, null, 2)
+            }
+          }
+        };
+        const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify(body)
+        });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        saveGistConfig();
+        setGistStatus(t("gistSaveSuccess"));
+      }catch(error){
+        console.error(error);
+        setGistStatus(`${t("gistError")} (${error.message})`, true);
+      }
+    }
+
+    function saveLocalOnly(){
+      saveGames();
+      saveGistConfig();
+      renderAll();
+      setGistStatus(t("saveSuccess"));
+    }
+
 
     function renderAll(){
       applyStaticText();
       renderGames();
       renderPicker();
       renderAdminList();
+      populateGistFields();
       updateSummary();
     }
 
@@ -1408,6 +1799,10 @@
     document.getElementById("addNewBtn").addEventListener("click", resetAdminForm);
     document.getElementById("saveGameBtn").addEventListener("click", saveGameFromForm);
     document.getElementById("resetFormBtn").addEventListener("click", resetAdminForm);
+    document.getElementById("loadGistBtn").addEventListener("click", loadFromGist);
+    document.getElementById("saveGistBtn").addEventListener("click", saveToGist);
+    document.getElementById("saveLocalBtn").addEventListener("click", saveLocalOnly);
+    document.getElementById("gistIdInput").addEventListener("input", saveGistConfig);
 
     closeGameModal.addEventListener("click", ()=>gameModal.classList.remove("show"));
     gameModal.addEventListener("click", e => { if(e.target === gameModal) gameModal.classList.remove("show"); });
