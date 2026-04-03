@@ -891,7 +891,7 @@
           <div class="form-grid">
             <div class="field">
               <label id="gistIdLabel">Gist ID</label>
-              <input type="text" id="gistIdInput" placeholder="deb64cfa7e0c18c37303452f6a0a7ff1">
+              <input type="text" id="gistIdInput" placeholder="Paste your Gist ID">
             </div>
             <div class="field">
               <label id="gistTokenLabel">GitHub Token (optional for load, required for upload)</label>
@@ -978,7 +978,7 @@
     const STORAGE_KEY = "aj_boardgame_admin_v18_bilingual";
     const GIST_CONFIG_KEY = "aj_boardgame_gist_config_v1";
     const GIST_FILENAME = "aj-boardgame-games.json";
-    const DEFAULT_GIST_ID = "PASTE_GIST_ID_HERE";
+    const DEFAULT_GIST_ID = "deb64cfa7e0c18c37303452f6a0a7ff1";
     const ADMIN_USER = "ajgame";
     const ADMIN_PASS = "T@nose@2026";
 
@@ -1809,7 +1809,14 @@
     loginModal.addEventListener("click", e => { if(e.target === loginModal) loginModal.classList.remove("show"); });
     adminModal.addEventListener("click", e => { if(e.target === adminModal) adminModal.classList.remove("show"); });
 
-    renderAll();
+    (async function initApp(){
+      renderAll();
+      const gistIdInput = document.getElementById("gistIdInput");
+      if(gistIdInput && !gistIdInput.value && DEFAULT_GIST_ID){
+        gistIdInput.value = DEFAULT_GIST_ID;
+      }
+      await loadFromGist();
+    })();
   </script>
 </body>
 </html>
