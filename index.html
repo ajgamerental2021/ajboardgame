@@ -396,6 +396,25 @@
     .pick-item.is-disabled .pick-price{
       color:#777;
     }
+    .pick-main{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .pick-thumb{
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      object-fit:cover;
+      background:#eee;
+      border:1px solid #eadede;
+      flex:0 0 auto;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+    .pick-copy{
+      min-width:0;
+    }
 
     .summary-actions{
       margin-top:16px;
@@ -1013,7 +1032,7 @@
     const GIST_FILENAME = "aj-boardgame-games.json";
     const DEFAULT_GIST_ID = "deb64cfa7e0c18c37303452f6a0a7ff1";
     const ADMIN_USER = "ajgame";
-    const ADMIN_PASS = "T@nose@2026";
+    const ADMIN_PASS_HASH = "fdcc621fd584df74f42ad0f9adc6ff6f118ee39bada9ec0c02b0e57639fd0f6a";
 
     let lang = "th";
 
@@ -1477,9 +1496,12 @@
         const statusColor = game.unavailable ? "#b91c1c" : "#15803d";
         item.innerHTML = `
           <input type="checkbox" data-id="${game.id}" ${game.unavailable ? "disabled" : ""}>
-          <div>
-            <div class="pick-title">${gameName(game)}</div>
-            <div class="pick-sub" style="color:${statusColor};font-weight:800;">${statusText}</div>
+          <div class="pick-main">
+            <img class="pick-thumb" src="${game.image || ""}" alt="${gameName(game)}">
+            <div class="pick-copy">
+              <div class="pick-title">${gameName(game)}</div>
+              <div class="pick-sub" style="color:${statusColor};font-weight:800;">${statusText}</div>
+            </div>
           </div>
           <div class="pick-price">
             ${t("rentPerDay")}
@@ -1487,6 +1509,10 @@
           </div>
         `;
         const cb = item.querySelector("input");
+        const thumb = item.querySelector(".pick-thumb");
+        if(thumb){
+          thumb.onerror = () => { thumb.style.display = "none"; };
+        }
         if(selectedIds.includes(game.id) && !game.unavailable) cb.checked = true;
         cb.addEventListener("change", updateSummary);
         pickerGrid.appendChild(item);
@@ -1592,10 +1618,21 @@
       document.getElementById("adminPass").value = "";
     }
 
-    function doLogin(){
+
+    async function hashText(text){
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    async function doLogin(){
       const u = document.getElementById("adminUser").value.trim();
       const p = document.getElementById("adminPass").value;
-      if(u === ADMIN_USER && p === ADMIN_PASS){
+      const hashed = await hashText(p);
+      if(u === ADMIN_USER && hashed === ADMIN_PASS_HASH){
         loginModal.classList.remove("show");
         openAdmin();
       } else {
