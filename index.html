@@ -643,6 +643,32 @@
     }
     .span-2{grid-column:1 / -1}
 
+    .rent-now-btn{
+      width:100%;
+      margin-top:12px;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      cursor:pointer;
+      font-weight:900;
+      background:var(--red);
+      color:#fff;
+      box-shadow:0 8px 16px rgba(225,6,0,.16);
+      transition:.18s ease;
+    }
+    .rent-now-btn:hover{filter:brightness(1.05)}
+    .rent-now-btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+    .modal-actions{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     @media (max-width:920px){
       .grid-2,.rent-layout,.modal-grid,.form-grid{
         grid-template-columns:1fr;
@@ -845,6 +871,9 @@
           <div class="modal-desc" id="modalDesc"></div>
           <div class="modal-subtitle" id="modalHowTitle">วิธีเล่นคร่าวๆ</div>
           <div class="modal-how" id="modalHow"></div>
+          <div class="modal-actions">
+            <button class="rent-now-btn" id="modalRentBtn" type="button">เช่าเลย</button>
+          </div>
         </div>
       </div>
     </div>
@@ -891,7 +920,7 @@
           <div class="form-grid">
             <div class="field">
               <label id="gistIdLabel">Gist ID</label>
-              <input type="text" id="gistIdInput" placeholder="Paste your Gist ID">
+              <input type="text" id="gistIdInput" placeholder="deb64cfa7e0c18c37303452f6a0a7ff1">
             </div>
             <div class="field">
               <label id="gistTokenLabel">GitHub Token (optional for load, required for upload)</label>
@@ -913,6 +942,10 @@
             <div class="field">
               <label id="fNameLabel">ชื่อเกม</label>
               <input type="text" id="fName">
+            </div>
+            <div class="field">
+              <label id="fNameEnLabel">ชื่อเกม (English)</label>
+              <input type="text" id="fNameEn">
             </div>
             <div class="field">
               <label id="fDepositLabel">ค่าประกัน (บาท)</label>
@@ -1039,6 +1072,7 @@
         logoutBtn: "Logout",
         adminFormTitle: "เพิ่ม / แก้ไขเกม",
         fNameLabel: "ชื่อเกม",
+        fNameEnLabel: "ชื่อเกม (English)",
         fDepositLabel: "ค่าประกัน (บาท)",
         fImageLabel: "URL รูปเกม",
         fPlayersLabel: "จำนวนผู้เล่น",
@@ -1097,7 +1131,8 @@
         deleteConfirm: "ลบเกม",
         editBtn: "แก้ไข",
         deleteBtn: "ลบ",
-        addEditGame: "เพิ่ม / แก้ไขเกม"
+        addEditGame: "เพิ่ม / แก้ไขเกม",
+        rentNow: "เช่าเลย"
       },
       en: {
         brandTitle: "AJ Boardgame Rental",
@@ -1153,6 +1188,7 @@
         logoutBtn: "Logout",
         adminFormTitle: "Add / Edit Game",
         fNameLabel: "Game name",
+        fNameEnLabel: "Game name (English)",
         fDepositLabel: "Deposit (THB)",
         fImageLabel: "Game image URL",
         fPlayersLabel: "Players",
@@ -1211,7 +1247,8 @@
         deleteConfirm: "Delete game",
         editBtn: "Edit",
         deleteBtn: "Delete",
-        addEditGame: "Add / Edit Game"
+        addEditGame: "Add / Edit Game",
+        rentNow: "Rent now"
       }
     };
 
@@ -1241,6 +1278,7 @@
 
     let games = loadGames();
     let editingId = null;
+    let currentModalGameId = null;
 
     const gamesGrid = document.getElementById("gamesGrid");
     const pickerGrid = document.getElementById("pickerGrid");
@@ -1263,6 +1301,7 @@
     const modalMeta = document.getElementById("modalMeta");
     const modalDesc = document.getElementById("modalDesc");
     const modalHow = document.getElementById("modalHow");
+    const modalRentBtn = document.getElementById("modalRentBtn");
 
     const loginModal = document.getElementById("loginModal");
     const adminModal = document.getElementById("adminModal");
@@ -1366,7 +1405,7 @@
         "noIdNote","copyBtn","clearBtn","summaryTitle","sumCountLabel","sumRentLabel",
         "sumDepositLabel","sumExtraLabel","sumTotalLabel","modalHowTitle","scrollRentBtn",
         "openAdminBtn","loginTitle","userLabel","passLabel","loginBtn","adminHeaderTitle",
-        "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fDepositLabel",
+        "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fNameEnLabel","fDepositLabel",
         "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fUnavailableLabel","fAvailableDateLabel","fDescThLabel","fDescEnLabel",
         "fHowThLabel","fHowEnLabel","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm"
       ];
@@ -1408,11 +1447,19 @@
               <span class="pill">${t("depositPrefix")} ${money(game.deposit)}</span>
             </div>
             <p class="game-desc">${gameDesc(game)}</p>
+            <button class="rent-now-btn" type="button" ${game.unavailable ? "disabled" : ""} data-rent-id="${game.id}">${t("rentNow")}</button>
           </div>
         `;
         const img = card.querySelector("img");
         const fb = card.querySelector(".fallback");
+        const rentBtn = card.querySelector("[data-rent-id]");
         img.onerror = () => { img.style.display = "none"; fb.style.display = "flex"; };
+        if(rentBtn){
+          rentBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            rentGameNow(game.id);
+          });
+        }
         card.addEventListener("click", () => openGameModal(game));
         gamesGrid.appendChild(card);
       });
@@ -1447,6 +1494,7 @@
     }
 
     function openGameModal(game){
+      currentModalGameId = game.id;
       modalImg.src = game.image || "";
       modalImg.onerror = () => { modalImg.style.display = "none"; };
       modalImg.onload = () => { modalImg.style.display = "block"; };
@@ -1459,7 +1507,23 @@
       `;
       modalDesc.textContent = gameDesc(game);
       modalHow.textContent = gameHow(game);
+      if(modalRentBtn){
+        modalRentBtn.textContent = t("rentNow");
+        modalRentBtn.disabled = !!game.unavailable;
+      }
       gameModal.classList.add("show");
+    }
+
+    function rentGameNow(gameId){
+      const game = games.find(g => g.id === Number(gameId));
+      if(!game || game.unavailable) return;
+      const targetCheckbox = document.querySelector(`#pickerGrid input[data-id="${game.id}"]`);
+      if(targetCheckbox){
+        targetCheckbox.checked = true;
+      }
+      updateSummary();
+      gameModal.classList.remove("show");
+      document.getElementById("rentSection").scrollIntoView({ behavior:"smooth", block:"start" });
     }
 
     function updateSummary(){
@@ -1556,7 +1620,8 @@
             <img src="${game.image || ""}" alt="${gameName(game)}" referrerpolicy="no-referrer">
           </div>
           <div>
-            <div style="font-weight:900">${gameName(game)}</div>
+            <div style="font-weight:900">${game.name || ""}</div>
+            <div style="color:#666;margin-top:2px">${game.name_en || game.name || ""}</div>
             <div style="color:#666;margin-top:4px">${t("depositPrefix")} ${money(game.deposit)} • ${game.players || "-"} ${t("playersUnit")} • ${game.time || "-"} ${t("minsUnit")}</div>
             <div style="color:${game.unavailable ? "#a11" : "#216b2f"};margin-top:6px;font-weight:800">${game.unavailable ? t("unavailableNow") + (game.available_date ? " • " + t("availableOn") + " " + formatAvailableDate(game.available_date) : "") : t("availableNow")}</div>
           </div>
@@ -1575,6 +1640,7 @@
       editingId = null;
       document.getElementById("adminFormTitle").textContent = t("addEditGame");
       document.getElementById("fName").value = "";
+      document.getElementById("fNameEn").value = "";
       document.getElementById("fDeposit").value = "";
       document.getElementById("fImage").value = "";
       document.getElementById("fPlayers").value = "";
@@ -1594,6 +1660,7 @@
       editingId = id;
       document.getElementById("adminFormTitle").textContent = t("editBtn");
       document.getElementById("fName").value = game.name || "";
+      document.getElementById("fNameEn").value = game.name_en || "";
       document.getElementById("fDeposit").value = game.deposit || 0;
       document.getElementById("fImage").value = game.image || "";
       document.getElementById("fPlayers").value = game.players || "";
@@ -1605,12 +1672,15 @@
       document.getElementById("fDescEn").value = game.desc_en || "";
       document.getElementById("fHowTh").value = game.how || "";
       document.getElementById("fHowEn").value = game.how_en || "";
+      const formCard = document.getElementById("adminFormTitle")?.closest(".card");
+      if(formCard) formCard.scrollIntoView({ behavior:"smooth", block:"start" });
+      setTimeout(() => document.getElementById("fName")?.focus(), 120);
     }
 
     function saveGameFromForm(){
       const data = {
         name: document.getElementById("fName").value.trim(),
-        name_en: document.getElementById("fName").value.trim(),
+        name_en: document.getElementById("fNameEn").value.trim() || document.getElementById("fName").value.trim(),
         deposit: Number(document.getElementById("fDeposit").value || 0),
         image: document.getElementById("fImage").value.trim(),
         players: document.getElementById("fPlayers").value.trim(),
@@ -1793,10 +1863,21 @@
     document.getElementById("openAdminBtn").addEventListener("click", openLogin);
     document.getElementById("closeLoginModal").addEventListener("click", ()=>loginModal.classList.remove("show"));
     document.getElementById("loginBtn").addEventListener("click", doLogin);
+    document.getElementById("adminUser").addEventListener("keydown", (e) => {
+      if(e.key === "Enter") doLogin();
+    });
+    document.getElementById("adminPass").addEventListener("keydown", (e) => {
+      if(e.key === "Enter") doLogin();
+    });
 
     document.getElementById("closeAdminModal").addEventListener("click", ()=>adminModal.classList.remove("show"));
     document.getElementById("logoutBtn").addEventListener("click", ()=>adminModal.classList.remove("show"));
-    document.getElementById("addNewBtn").addEventListener("click", resetAdminForm);
+    document.getElementById("addNewBtn").addEventListener("click", () => {
+      resetAdminForm();
+      const formCard = document.getElementById("adminFormTitle")?.closest(".card");
+      if(formCard) formCard.scrollIntoView({ behavior:"smooth", block:"start" });
+      setTimeout(() => document.getElementById("fName")?.focus(), 120);
+    });
     document.getElementById("saveGameBtn").addEventListener("click", saveGameFromForm);
     document.getElementById("resetFormBtn").addEventListener("click", resetAdminForm);
     document.getElementById("loadGistBtn").addEventListener("click", loadFromGist);
@@ -1804,6 +1885,9 @@
     document.getElementById("saveLocalBtn").addEventListener("click", saveLocalOnly);
     document.getElementById("gistIdInput").addEventListener("input", saveGistConfig);
 
+    if(modalRentBtn){
+      modalRentBtn.addEventListener("click", () => rentGameNow(currentModalGameId));
+    }
     closeGameModal.addEventListener("click", ()=>gameModal.classList.remove("show"));
     gameModal.addEventListener("click", e => { if(e.target === gameModal) gameModal.classList.remove("show"); });
     loginModal.addEventListener("click", e => { if(e.target === loginModal) loginModal.classList.remove("show"); });
