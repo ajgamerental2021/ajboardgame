@@ -688,6 +688,151 @@
       flex-wrap:wrap;
     }
 
+
+
+    .detail-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      border:none;
+      border-radius:12px;
+      padding:11px 13px;
+      cursor:pointer;
+      font-weight:800;
+      background:#fff;
+      border:1px solid #e6d8d8;
+      color:#111;
+      transition:.18s ease;
+    }
+    .detail-btn:hover{border-color:#efbaba;transform:translateY(-1px)}
+
+    .checklist-toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:14px 0 18px;
+    }
+    .checklist-meta{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:10px;
+      margin:12px 0 18px;
+    }
+    .meta-chip{
+      background:#fff7f7;
+      border:1px solid #f0d3d3;
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:800;
+      color:#5b2222;
+    }
+    .checklist-table-wrap{
+      overflow:auto;
+      border:1px solid #ece4e4;
+      border-radius:18px;
+      background:#fff;
+    }
+    .checklist-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:820px;
+    }
+    .checklist-table th,
+    .checklist-table td{
+      padding:12px 10px;
+      border-bottom:1px solid #eee6e6;
+      vertical-align:top;
+      text-align:left;
+    }
+    .checklist-table thead th{
+      position:sticky;
+      top:0;
+      background:#fff5f5;
+      z-index:1;
+      font-size:.95rem;
+    }
+    .checklist-table tbody tr.group-row td{
+      background:#faf5f5;
+      font-weight:900;
+      color:#7b1d1d;
+      border-top:1px solid #ecd2d2;
+    }
+    .tick-cell{
+      min-width:105px;
+      text-align:center !important;
+    }
+    .tick-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      font-size:.86rem;
+      color:#555;
+    }
+    .tick-wrap input{
+      width:18px;
+      height:18px;
+      accent-color:var(--red);
+    }
+    .checklist-note{
+      margin-top:14px;
+      background:#fff8ef;
+      border:1px solid #f0deba;
+      border-radius:16px;
+      padding:13px 14px;
+      color:#6a4b13;
+      line-height:1.6;
+      font-weight:700;
+    }
+    .checklist-empty{
+      padding:18px;
+      border:1px dashed #e5c8c8;
+      border-radius:16px;
+      background:#fff9f9;
+      color:#666;
+      line-height:1.7;
+    }
+    .admin-help{
+      margin-top:8px;
+      color:#777;
+      font-size:.88rem;
+      line-height:1.55;
+    }
+    .admin-mini-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    @media print{
+      body.printing-checklist *{visibility:hidden !important;}
+      body.printing-checklist #checklistModal,
+      body.printing-checklist #checklistModal *{visibility:visible !important;}
+      body.printing-checklist #checklistModal{
+        position:absolute !important;
+        inset:0 !important;
+        background:#fff !important;
+        padding:0 !important;
+      }
+      body.printing-checklist #checklistModal .modal-card{
+        width:100% !important;
+        max-height:none !important;
+        box-shadow:none !important;
+        border:none !important;
+        border-radius:0 !important;
+      }
+      body.printing-checklist #checklistCloseBtn,
+      body.printing-checklist #checklistPrintBtn,
+      body.printing-checklist #checklistExportBtn,
+      body.printing-checklist #checklistCloseBtnFooter,
+      body.printing-checklist #checklistPlayBtn,
+      body.printing-checklist .checklist-toolbar .btn,
+      body.printing-checklist .checklist-toolbar .detail-btn{display:none !important;}
+      body.printing-checklist .checklist-table{min-width:0 !important;}
+    }
+
     @media (max-width:920px){
       .grid-2,.rent-layout,.modal-grid,.form-grid{
         grid-template-columns:1fr;
@@ -891,8 +1036,48 @@
           <div class="modal-subtitle" id="modalHowTitle">วิธีเล่นคร่าวๆ</div>
           <div class="modal-how" id="modalHow"></div>
           <div class="modal-actions">
+            <button class="detail-btn" id="modalChecklistBtn" type="button">📋 Check List อุปกรณ์</button>
+            <a class="detail-btn" id="modalGuideBtn" href="#" target="_blank" rel="noopener noreferrer">📘 วิธีการเล่นแบบละเอียด</a>
             <button class="rent-now-btn" id="modalRentBtn" type="button">เช่าเลย</button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="checklistModal">
+    <div class="modal-card">
+      <button class="close-btn" id="checklistCloseBtn">×</button>
+      <div class="admin-wrap">
+        <h3 style="margin:0 0 8px" id="checklistModalTitle">Check List อุปกรณ์</h3>
+        <div style="color:#666;line-height:1.6" id="checklistModalSub">ตรวจอุปกรณ์ก่อนส่งของ / ได้รับของ / รับคืนของ แล้วพิมพ์หรือ Export เป็น PDF ได้ทันที</div>
+        <div class="checklist-meta" id="checklistMeta"></div>
+        <div class="checklist-toolbar">
+          <button class="btn btn-primary" id="checklistPrintBtn" type="button">🖨️ พิมพ์ Check List</button>
+          <button class="btn btn-secondary" id="checklistExportBtn" type="button">📄 Export to PDF</button>
+          <a class="detail-btn" id="checklistPlayBtn" href="#" target="_blank" rel="noopener noreferrer">📘 วิธีการเล่นแบบละเอียด</a>
+        </div>
+        <div class="checklist-table-wrap">
+          <table class="checklist-table">
+            <thead>
+              <tr>
+                <th style="width:64px">#</th>
+                <th style="width:180px" id="clHeadCategory">หมวด</th>
+                <th id="clHeadItem">รายการอุปกรณ์</th>
+                <th style="width:90px" id="clHeadQty">จำนวน</th>
+                <th class="tick-cell" id="clHeadSend">ส่งของ</th>
+                <th class="tick-cell" id="clHeadReceive">ได้รับของ</th>
+                <th class="tick-cell" id="clHeadReturn">รับคืนของ</th>
+                <th style="width:180px" id="clHeadNote">หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody id="checklistBody"></tbody>
+          </table>
+        </div>
+        <div class="checklist-empty" id="checklistEmpty" style="display:none">ยังไม่มีรายการ Check List ของเกมนี้ สามารถเพิ่มหรือแก้ไขได้จากหน้า Admin</div>
+        <div class="checklist-note" id="checklistFooterNote">หมายเหตุ: ช่องติ๊กนี้เป็นตัวช่วยตรวจความครบของอุปกรณ์ในแต่ละช่วงงาน และจะไม่ถูกบันทึกถาวรหลังรีเฟรชหน้า ข้อมูล Check List นี้อ้างอิงจากคู่มือ/หน้าสินค้า/แหล่งข้อมูลเกม และอาจต่างกันเล็กน้อยตาม edition ซึ่งสามารถแก้ไขได้จากหน้า Admin</div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="checklistCloseBtnFooter" type="button">ปิดหน้าต่าง</button>
         </div>
       </div>
     </div>
@@ -1013,6 +1198,23 @@
               <label id="fHowEnLabel">How to play (English)</label>
               <textarea id="fHowEn" rows="4"></textarea>
             </div>
+            <div class="field span-2">
+              <label id="fGuideUrlLabel">ลิงก์วิธีการเล่นแบบละเอียด</label>
+              <input type="text" id="fGuideUrl" placeholder="https://...">
+              <div class="admin-help" id="fGuideUrlHelp">ใส่ลิงก์สำหรับปุ่มวิธีการเล่นแบบละเอียด เช่น BGG, PDF, YouTube หรือเว็บคู่มือเกม</div>
+            </div>
+            <div class="field span-2">
+              <label id="fChecklistLabel">Check List อุปกรณ์ในกล่อง</label>
+              <textarea id="fChecklist" rows="10" placeholder="หมวด | รายการ | จำนวน | หมายเหตุ
+ตัวอย่าง:
+การ์ด | Starter Cards | 54 | ไพ่เริ่มต้น
+โทเคน | Gem Tokens | 40 | 5 สี
+กระดาน | Main Board | 1 | -"></textarea>
+              <div class="admin-help" id="fChecklistHelp">ใส่ 1 รายการต่อ 1 บรรทัด โดยใช้ | คั่นเป็น: หมวด | รายการ | จำนวน | หมายเหตุ</div>
+              <div class="admin-mini-actions">
+                <button class="btn btn-secondary" id="fillChecklistTemplateBtn" type="button">เติมตัวอย่างรูปแบบ</button>
+              </div>
+            </div>
           </div>
           <div class="btn-row">
             <button class="btn btn-primary" id="saveGameBtn">บันทึกเกม</button>
@@ -1027,7 +1229,7 @@
 
   <script>
     const RENT_PER_DAY = 90;
-    const STORAGE_KEY = "aj_boardgame_admin_v18_bilingual";
+    const STORAGE_KEY = "aj_boardgame_admin_v21_fullchecklist_fix";
     const GIST_CONFIG_KEY = "aj_boardgame_gist_config_v1";
     const GIST_FILENAME = "aj-boardgame-games.json";
     const DEFAULT_GIST_ID = "deb64cfa7e0c18c37303452f6a0a7ff1";
@@ -1151,7 +1353,32 @@
         editBtn: "แก้ไข",
         deleteBtn: "ลบ",
         addEditGame: "เพิ่ม / แก้ไขเกม",
-        rentNow: "เช่าเลย"
+        rentNow: "เช่าเลย",
+        checklistBtn: "📋 Check List อุปกรณ์",
+        guideBtn: "📘 วิธีการเล่นแบบละเอียด",
+        checklistModalTitle: "Check List อุปกรณ์",
+        checklistModalSub: "ตรวจอุปกรณ์ก่อนส่งของ / ได้รับของ / รับคืนของ แล้วพิมพ์หรือ Export เป็น PDF ได้ทันที",
+        checklistPrintBtn: "🖨️ พิมพ์ Check List",
+        checklistExportBtn: "📄 Export to PDF",
+        checklistCloseBtnFooter: "ปิดหน้าต่าง",
+        checklistFooterNote: "หมายเหตุ: ช่องติ๊กนี้เป็นตัวช่วยตรวจความครบของอุปกรณ์ในแต่ละช่วงงาน และจะไม่ถูกบันทึกถาวรหลังรีเฟรชหน้า ข้อมูล Check List นี้อ้างอิงจากคู่มือ/หน้าสินค้า/แหล่งข้อมูลเกม และอาจต่างกันเล็กน้อยตาม edition ซึ่งสามารถแก้ไขได้จากหน้า Admin",
+        clHeadCategory: "หมวด",
+        clHeadItem: "รายการอุปกรณ์",
+        clHeadQty: "จำนวน",
+        clHeadSend: "ส่งของ",
+        clHeadReceive: "ได้รับของ",
+        clHeadReturn: "รับคืนของ",
+        clHeadNote: "หมายเหตุ",
+        checklistEmpty: "ยังไม่มีรายการ Check List ของเกมนี้ สามารถเพิ่มหรือแก้ไขได้จากหน้า Admin",
+        guideUnavailable: "ยังไม่มีลิงก์วิธีการเล่นแบบละเอียดสำหรับเกมนี้",
+        fGuideUrlLabel: "ลิงก์วิธีการเล่นแบบละเอียด",
+        fGuideUrlHelp: "ใส่ลิงก์สำหรับปุ่มวิธีการเล่นแบบละเอียด เช่น BGG, PDF, YouTube หรือเว็บคู่มือเกม",
+        fChecklistLabel: "Check List อุปกรณ์ในกล่อง",
+        fChecklistHelp: "ใส่ 1 รายการต่อ 1 บรรทัด โดยใช้ | คั่นเป็น: หมวด | รายการ | จำนวน | หมายเหตุ",
+        fillChecklistTemplateBtn: "เติมตัวอย่างรูปแบบ",
+        checklistTemplate: "หมวด | รายการ | จำนวน | หมายเหตุ\nการ์ด | ไพ่เริ่มต้น | 54 | ไพ่ชุดเริ่มต้น\nโทเคน | โทเคนแต้ม | 30 | นับให้ครบก่อนส่ง\nกระดาน | กระดานหลัก | 1 | -",
+        printFilePrefix: "CheckList",
+        editBtnShort: "แก้ไข"
       },
       en: {
         brandTitle: "AJ Boardgame Rental",
@@ -1267,32 +1494,57 @@
         editBtn: "Edit",
         deleteBtn: "Delete",
         addEditGame: "Add / Edit Game",
-        rentNow: "Rent now"
+        rentNow: "Rent now",
+        checklistBtn: "📋 Equipment Checklist",
+        guideBtn: "📘 Detailed how to play",
+        checklistModalTitle: "Equipment Checklist",
+        checklistModalSub: "Check all components before dispatch, upon receipt, and on return. You can print or export to PDF instantly.",
+        checklistPrintBtn: "🖨️ Print Checklist",
+        checklistExportBtn: "📄 Export to PDF",
+        checklistCloseBtnFooter: "Close",
+        checklistFooterNote: "Note: These checkboxes are temporary helpers for each handoff stage and are not saved permanently after refresh.",
+        clHeadCategory: "Category",
+        clHeadItem: "Component",
+        clHeadQty: "Qty",
+        clHeadSend: "Dispatch",
+        clHeadReceive: "Received",
+        clHeadReturn: "Returned",
+        clHeadNote: "Notes",
+        checklistEmpty: "No checklist has been added for this game yet. You can add or edit it in Admin.",
+        guideUnavailable: "No detailed how-to-play link has been added for this game yet.",
+        fGuideUrlLabel: "Detailed how-to-play link",
+        fGuideUrlHelp: "Enter the link used by the detailed guide button, such as BGG, PDF, YouTube, or an official rule page.",
+        fChecklistLabel: "Box contents checklist",
+        fChecklistHelp: "Enter one item per line using: Category | Item | Quantity | Notes",
+        fillChecklistTemplateBtn: "Insert sample format",
+        checklistTemplate: "Category | Item | Qty | Notes\nCards | Starter cards | 54 | Starting deck\nTokens | Score tokens | 30 | Count before dispatch\nBoards | Main board | 1 | -",
+        printFilePrefix: "Checklist",
+        editBtnShort: "Edit"
       }
     };
 
     const INITIAL_GAMES = [
-      {id:1,name:"เหลี่ยมสัตว์",name_en:"Dirty Work",image:"https://i.postimg.cc/pLWRXJ0p/618815188_1488173483317868_3759553166913810667_n.jpg",deposit:800,players:"2-5",time:"20-30",age:"8+",desc:"เกมปาร์ตี้วางแผนเบาๆ เล่นง่าย สนุกไว เหมาะกับกลุ่มเพื่อนและครอบครัว",desc_en:"A light strategy party game that is easy to learn and fun for friends and families.",how:"ผลัดกันเลือกและเล่นตามกติกาของเกม ใช้การสังเกตและตัดสินใจให้ไวเพื่อเก็บคะแนนหรือเอาชนะคู่แข่ง",how_en:"Take turns following the game rules, using observation and quick decisions to score points or beat your opponents."},
-      {id:2,name:"เกมค้าเพชร",name_en:"Splendor",image:"https://i.postimg.cc/fRzDTf8F/1631269809337.jpg",deposit:1200,players:"2-4",time:"30",age:"10+",desc:"เกมสะสมอัญมณีและซื้อการ์ดพัฒนา แข่งกันสร้างเครื่องยนต์ทรัพยากรให้คะแนนพุ่งไวที่สุด",desc_en:"A gem-collecting engine-building game where players buy development cards and race for prestige points.",how:"ในแต่ละเทิร์น ผู้เล่นเลือกเก็บโทเคนอัญมณี จองการ์ด หรือซื้อการ์ดเพื่อนำส่วนลดสีมาใช้ต่อยอด เป้าหมายคือทำคะแนนให้ถึงก่อนคนอื่น",how_en:"On each turn, players collect gem tokens, reserve cards, or buy cards to gain permanent discounts and reach the target score first."},
-      {id:3,name:"PUBG Battlegrounds เดอะบอร์ดเกม",name_en:"PUBG Battlegrounds: The Board Game",image:"https://i.postimg.cc/rwVMFNhT/74k79f.jpg",deposit:1700,players:"2-4",time:"30-45",age:"12+",desc:"บอร์ดเกมเอาตัวรอดที่ได้อารมณ์เหมือนเกมยิง เลือกเส้นทาง เก็บของ และปะทะกันจนเหลือผู้ชนะ",desc_en:"A survival board game inspired by battle royale shooters where players loot, move, and fight to be the last one standing.",how:"สำรวจแผนที่ เก็บอาวุธและอุปกรณ์ บริหารจังหวะการเคลื่อนที่ และเอาตัวรอดจากวงที่บีบเข้ามา",how_en:"Explore the map, collect weapons and gear, manage movement carefully, and survive the shrinking zone."},
-      {id:4,name:"Dead by Daylight เดอะบอร์ดเกม",name_en:"Dead by Daylight: The Board Game",image:"https://i.postimg.cc/Qxkj3yJ4/Dead_by_Daylight_The_Board_Game_(Thai_version).jpg",deposit:1500,players:"3-5",time:"45",age:"14+",desc:"เกมเอาชีวิตรอดแบบ 1 ปะทะหลายคน ฝั่งผู้รอดชีวิตต้องซ่อมเครื่องและหนี ส่วนฆาตกรต้องตามล่าให้ทัน",desc_en:"An asymmetrical survival game where survivors repair generators and escape while the killer hunts them down.",how:"ฝั่งผู้รอดชีวิตร่วมมือกันซ่อมเครื่องปั่นไฟและหลบการตามล่า ส่วนผู้เล่นฝั่งฆาตกรใช้พลังพิเศษไล่จับให้ครบก่อนจะหนีสำเร็จ",how_en:"Survivors cooperate to repair generators and avoid danger, while the killer uses unique powers to catch them before they escape."},
-      {id:5,name:"Zombicide 2nd Edition ภาษาไทย",name_en:"Zombicide 2nd Edition",image:"https://i.postimg.cc/mgLB2ydk/xpqhjq.png",deposit:2500,players:"1-6",time:"60",age:"13+",desc:"เกมร่วมมือกันเอาตัวรอดจากซอมบี้แบบแอ็กชันจัดเต็ม เก็บของ อัปเลเวล และเคลียร์ภารกิจ",desc_en:"A fast-paced cooperative zombie survival game with missions, loot, leveling, and swarms of undead.",how:"ผู้เล่นควบคุมตัวละครหลายตัว ทำภารกิจในแผนที่ เก็บอาวุธ และกำจัดซอมบี้ที่เกิดเพิ่มทุกเทิร์น",how_en:"Players control survivors, complete missions, find better gear, and fight zombies that keep spawning each round."},
-      {id:6,name:"อาถรรย์แห่งอาครัม",name_en:"Arkham Horror",image:"https://i.postimg.cc/YqftHszJ/Arkham_Horror_TGG_box_front_png.webp",deposit:1500,players:"1-6",time:"120",age:"14+",desc:"เกมร่วมมือกันสืบสวนและต่อกรกับสิ่งลี้ลับในจักรวาล Lovecraft เต็มไปด้วยเหตุการณ์ไม่คาดคิด",desc_en:"A cooperative Lovecraftian adventure game full of investigations, monsters, and unexpected events.",how:"ผู้เล่นรับบทนักสืบ เดินทางเก็บเบาะแส สู้มอนสเตอร์ และปิดประตูมิติให้ทันก่อนโลกจะถูกกลืนกิน",how_en:"Players act as investigators, gathering clues, fighting monsters, and sealing gates before the ancient evil overwhelms the world."},
-      {id:7,name:"Harmonies",name_en:"Harmonies",image:"https://i.postimg.cc/vHLGsNt3/v92068.jpg",deposit:1200,players:"1-4",time:"30",age:"10+",desc:"เกมจัดวางภูมิประเทศสีสวย สร้างถิ่นอาศัยให้สัตว์และทำคะแนนจากแพตเทิร์นที่ลงตัว",desc_en:"A beautiful spatial puzzle game about building landscapes and creating habitats for animals.",how:"เลือกชิ้นภูมิประเทศมาวางบนกระดานส่วนตัวให้ตรงกับเงื่อนไขของการ์ดสัตว์ ยิ่งวางได้สอดคล้องยิ่งทำคะแนนดี",how_en:"Choose terrain tokens and place them on your board to match animal card patterns for higher scores."},
-      {id:8,name:"ผู้ตรวจการแห่งนอตทิงแฮม 2nd Edition",name_en:"Sheriff of Nottingham 2nd Edition",image:"https://i.postimg.cc/SN7mhvfL/zxqvnk.jpg",deposit:1500,players:"3-6",time:"45-60",age:"14+",desc:"เกม bluff และต่อรองสุดป่วน ลอบขนของ หลอกเจ้าหน้าที่ หรือเนียนให้รอดก็ได้",desc_en:"A bluffing and negotiation game full of smuggling, deception, and risky decisions.",how:"ผลัดกันเป็นนายอำเภอ ตรวจสัมภาระของผู้เล่นคนอื่น ใครจะพูดจริงหรือโกหกต้องวัดใจกันล้วนๆ",how_en:"Players take turns being the sheriff, inspecting others' goods while everyone bluffs and bargains to get contraband through."},
-      {id:9,name:"เจ้าแห่งแวมไพร์ ปะทะ นักล่าปีศาจ",name_en:"Dracula vs Van Helsing",image:"https://i.postimg.cc/28FCDK7n/mx9b5t.jpg",deposit:900,players:"2",time:"20-30",age:"10+",desc:"เกมดวลสองฝ่าย ใช้การคาดเดาและวางจังหวะเพื่อไล่ล่าหรือเอาตัวรอด",desc_en:"A two-player duel of deduction and timing as one side hunts while the other tries to survive.",how:"ผู้เล่นผลัดกันขยับตำแหน่ง ใช้ความสามารถเฉพาะ และอ่านใจคู่ต่อสู้เพื่อคว้าชัย",how_en:"Players alternate actions, use special powers, and read the opponent’s moves to claim victory."},
-      {id:10,name:"7 สิ่งมหัศจรรย์ดวล",name_en:"7 Wonders Duel",image:"https://i.postimg.cc/tCH98jW3/1631180210748.jpg",deposit:700,players:"2",time:"30",age:"10+",desc:"เกมวางแผนอารยธรรมสำหรับ 2 คน แข่งกันชนะด้วยวิทยาศาสตร์ ทหาร หรือคะแนนปลายเกม",desc_en:"A two-player civilization game where you can win by science, military supremacy, or points.",how:"ผู้เล่นผลัดกันเลือกการ์ดจากผังพีระมิดเพื่อสร้างสิ่งปลูกสร้าง เก็บทรัพยากร พัฒนาวิทยาศาสตร์ และบีบคู่แข่งในสนามทหาร",how_en:"Players draft cards from a pyramid display to build structures, collect resources, advance science, and pressure the opponent on the military track."},
-      {id:11,name:"Mind Bug",name_en:"Mind Bug",image:"https://i.postimg.cc/7YMqkWn5/78d01cc5fef605dd0aed2f8ed3513b25.jpg",deposit:900,players:"2",time:"15-25",age:"8+",desc:"เกมการ์ดดวลเร็ว ใช้มอนสเตอร์พลังแปลกและจังหวะชิงไหวชิงพริบ",desc_en:"A fast tactical card duel featuring strange monsters and clever timing.",how:"สลับกันลงการ์ดโจมตี แต่ต้องระวังการใช้ Mind Bug ที่อาจโดนแย่งมอนสเตอร์สำคัญไปกลางคัน",how_en:"Take turns playing creatures and attacking, but watch out for Mind Bug moments that let your opponent steal your key monster."},
-      {id:12,name:"มัฟฟินไทม์",name_en:"Muffin Time",image:"https://i.postimg.cc/dtKJgYr8/i8b5yb.png",deposit:1000,players:"2-6",time:"20-40",age:"13+",desc:"เกมปาร์ตี้สายป่วน กติกาพลิกไปมา มีทั้งแกล้งกันและวางกับดักกันฮาๆ",desc_en:"A chaotic party card game filled with pranks, traps, and constantly changing rules.",how:"จั่วและเล่นการ์ดที่มีเอฟเฟกต์แสบๆ ตั้งเงื่อนไขให้ตัวเองชนะก่อนคนอื่น",how_en:"Draw and play wild effect cards, set tricky win conditions, and try to be the first to meet one."},
-      {id:13,name:"สกัล วาง ท้า ดวล",name_en:"Skull",image:"https://i.postimg.cc/nctnNJBK/th_11134207_7r98s_lqigqvql57fo11.jpg",deposit:700,players:"3-6",time:"20-30",age:"10+",desc:"เกมบลัฟฟ์เรียบง่ายแต่คมมาก ต้องกล้าท้าและเดาใจฝ่ายตรงข้ามให้แม่น",desc_en:"A sharp bluffing game that is simple to learn but full of tense mind games.",how:"ผู้เล่นลงแผ่นดอกไม้หรือหัวกะโหลกคว่ำหน้า แล้วเปิดประมูลว่าใครกล้าเปิดได้กี่ใบโดยไม่เจอหัวกะโหลก",how_en:"Players place flowers or skulls face down, then bid on how many they can reveal without hitting a skull."},
-      {id:14,name:"1 คืนปริศนาเกมล่ามนุษย์หมาป่า",name_en:"One Night Ultimate Werewolf",image:"https://i.postimg.cc/zX1q4rKH/SIAMBOARDGAMES_SIAMBOARDGAMESONENIGHTULTIMATEWEREWOLFTH_MKP1790246_1.webp",deposit:700,players:"3-10",time:"10",age:"8+",desc:"เกมปาร์ตี้สายจับผิด เล่นไวมาก บทบาทสลับไปมาและเดายากสุดๆ",desc_en:"A fast social deduction party game with hidden roles, shifting identities, and lots of debate.",how:"แต่ละคนได้รับบทลับและใช้ความสามารถตอนกลางคืน จากนั้นถกเถียงกันตอนกลางวันเพื่อหาว่าใครคือมนุษย์หมาป่า",how_en:"Each player gets a secret role, uses special powers at night, then debates during the day to find the werewolf."},
-      {id:15,name:"เซเลสเทีย",name_en:"Celestia",image:"https://i.postimg.cc/xTS9B2Mq/Celestia_(Thai_version).jpg",deposit:1300,players:"2-6",time:"30",age:"8+",desc:"เกมผจญภัยบนเรือเหาะ จะไปต่อหรือโดดลงเก็บแต้มก่อนดี ต้องเสี่ยงอย่างมีสไตล์",desc_en:"A stylish airship adventure game where players decide whether to stay on board or jump off with treasure.",how:"กัปตันต้องทอยและเล่นการ์ดผ่านอุปสรรค ส่วนผู้เล่นคนอื่นตัดสินใจว่าจะอยู่บนเรือต่อหรือรีบลงเก็บสมบัติ",how_en:"The captain rolls and plays cards to overcome obstacles while the other players decide whether to stay aboard or leave with their treasure."},
-      {id:16,name:"ผีถ้วยแก้ว",name_en:"Spirit Board",image:"https://i.postimg.cc/Prkd0jYr/pid_217058.jpg",deposit:900,players:"2-8",time:"15-30",age:"8+",desc:"เกมปาร์ตี้บรรยากาศลึกลับ เล่นง่าย และมีจังหวะชวนลุ้นตลอดเวลา",desc_en:"A spooky party game with simple rules and suspenseful moments throughout.",how:"ทำตามเงื่อนไขการ์ดและกติกาของเกม ใช้การสังเกตและความจำเพื่อเอาตัวรอดหรือเก็บคะแนน",how_en:"Follow the card effects and game rules, using observation and memory to survive or score points."},
-      {id:18,name:"ทีมค้นหา ไฟฉายมหัศจรรย์",name_en:"Spotlight",image:"https://i.postimg.cc/9FjcshZ4/zo.jpg",deposit:1000,players:"1-5",time:"15-20",age:"4+",desc:"เกมครอบครัวสำหรับเด็กและผู้ใหญ่ ใช้แผ่นไฟฉายค้นหาของในภาพอย่างสนุก",desc_en:"A family-friendly search game where players use a flashlight effect to find hidden objects.",how:"ส่องไฟฉายกระดาษไปบนฉากเพื่อหาเป้าหมายที่ซ่อนอยู่ แล้วช่วยกันทำภารกิจให้ครบ",how_en:"Move the paper flashlight over the scene to find hidden targets and complete the mission together."},
-      {id:19,name:"ต่าย ตัก ติม",name_en:"Bunny Scoop",image:"https://i.postimg.cc/MK8zgSVx/pic9232481_png.webp",deposit:1500,players:"2-4",time:"15-20",age:"6+",desc:"เกมครอบครัวธีมน่ารัก เล่นง่าย จังหวะเร็ว เหมาะกับทุกวัย",desc_en:"A cute and easy family game with quick turns and simple fun for all ages.",how:"ทำตามกติกาของการ์ดหรืออุปกรณ์ในเกม เพื่อเก็บคะแนนหรือไปถึงเป้าหมายก่อน",how_en:"Follow the card effects and game tools to score points or reach the goal first."},
-      {id:20,name:"ชีพจรลงเท้า: เกมแห่งการเดินทาง",name_en:"Itchy Feet: The Travel Game",image:"https://i.postimg.cc/sDR3br7z/DICECUPBOARDGAME_ITCHYFEETTHAIVERSIONBOARDGAME_MKP2064590_1.webp",deposit:900,players:"2-4",time:"45-60",age:"10+",desc:"เกมเดินทางรอบโลก วางแผนเส้นทาง เก็บประสบการณ์ และรับมือเหตุการณ์ชวนป่วน",desc_en:"A globe-trotting travel game about planning routes, gaining experiences, and handling unexpected events.",how:"ใช้การ์ดและแผนที่เพื่อเดินทางไปยังจุดหมายต่างๆ บริหารทรัพยากรและตัดสินใจเลือกเส้นทางที่คุ้มที่สุด",how_en:"Use cards and the map to travel to destinations, manage resources, and choose the most rewarding route."},
-      {id:21,name:"X-Virus",name_en:"X-Virus",image:"https://i.postimg.cc/65NBFXnN/images_19.jpg",deposit:800,players:"2-6",time:"15-25",age:"8+",desc:"เกมการ์ดไวๆ ที่ต้องกำจัดไวรัสและป้องกันการติดเชื้อของตัวเอง",desc_en:"A quick card game about curing viruses and protecting yourself from infection.",how:"ลงการ์ดยา วัคซีน หรือไวรัสใส่ผู้เล่นคนอื่น จัดการไพ่ในมือให้ดีเพื่อเป็นคนสุดท้ายที่รอด",how_en:"Play medicine, vaccine, or virus cards against others and manage your hand wisely to be the last one standing."},
-      {id:22,name:"The Lord of the Rings: Duel for Middle-Earth",name_en:"The Lord of the Rings: Duel for Middle-Earth",image:"https://i.postimg.cc/J4WRSLZL/%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A5%E0%B8%AD%E0%B8%A3_%E0%B8%94%E0%B8%AD%E0%B8%AD%E0%B8%9F%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A3_%E0%B8%87%E0%B8%AA_%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%94%E0%B8%A7%E0%B8%A5%E0%B8%8A_%E0%B8%87%E0%B8%9E_%E0%B8%A0%E0%B8%9E_(The_Lord_of_the_Rings_Duel_for_Middle_earth).jpg",deposit:1500,players:"2",time:"30-45",age:"10+",desc:"เกมดวลสำหรับ 2 คนในธีมลอร์ดออฟเดอะริงส์ วางแผน คุมพื้นที่ และแข่งชิงเงื่อนไขชนะ",desc_en:"A two-player duel set in Middle-earth where players plan carefully, control areas, and race toward victory conditions.",how:"เลือกการ์ดและใช้ความสามารถของฝ่ายตัวเองเพื่อสร้างความได้เปรียบทั้งในแผนที่และเป้าหมายพิเศษของเกม",how_en:"Choose cards and use your faction abilities to gain advantages on the map and pursue special victory goals."}
+      {id:1,name:"เหลี่ยมสัตว์",name_en:"Dirty Work",image:"https://i.postimg.cc/pLWRXJ0p/618815188_1488173483317868_3759553166913810667_n.jpg",deposit:800,players:"2-5",time:"20-30",age:"8+",guide_url:"https://www.google.com/search?q=Dirty+Work+board+game+rules",checklist:[{category:"Cards",item:"Character / role cards",qty:"1 deck",note:"ตรวจว่าอยู่ครบเป็นกองหลัก"},{category:"Cards",item:"Action / effect cards",qty:"1 deck",note:"แยกจากกองหลักถ้ามี"},{category:"Tokens",item:"Score / resource tokens",qty:"1 set",note:"เก็บรวมถุงเดียวได้"},{category:"Markers",item:"Turn / player markers",qty:"1 set",note:"นับรวมทุกสี"},{category:"Reference",item:"Reference cards",qty:"1 set",note:"แจกตามจำนวนผู้เล่น"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมปาร์ตี้วางแผนเบาๆ เล่นง่าย สนุกไว เหมาะกับกลุ่มเพื่อนและครอบครัว",desc_en:"A light strategy party game that is easy to learn and fun for friends and families.",how:"ผลัดกันเลือกและเล่นตามกติกาของเกม ใช้การสังเกตและตัดสินใจให้ไวเพื่อเก็บคะแนนหรือเอาชนะคู่แข่ง",how_en:"Take turns following the game rules, using observation and quick decisions to score points or beat your opponents."},
+      {id:2,name:"เกมค้าเพชร",name_en:"Splendor",image:"https://i.postimg.cc/fRzDTf8F/1631269809337.jpg",deposit:1200,players:"2-4",time:"30",age:"10+",guide_url:"https://boardgamegeek.com/boardgame/148228/splendor",checklist:[{category:"Cards",item:"Development cards Lv.1",qty:"40",note:"กองสีเขียว"},{category:"Cards",item:"Development cards Lv.2",qty:"30",note:"กองสีทอง"},{category:"Cards",item:"Development cards Lv.3",qty:"20",note:"กองสีฟ้า"},{category:"Tiles",item:"Noble tiles",qty:"10",note:"แยกนับเป็นแผ่น"},{category:"Tokens",item:"Emerald tokens",qty:"7",note:"สีเขียว"},{category:"Tokens",item:"Sapphire tokens",qty:"7",note:"สีน้ำเงิน"},{category:"Tokens",item:"Ruby tokens",qty:"7",note:"สีแดง"},{category:"Tokens",item:"Diamond tokens",qty:"7",note:"สีขาว"},{category:"Tokens",item:"Onyx tokens",qty:"7",note:"สีดำ"},{category:"Tokens",item:"Gold joker tokens",qty:"5",note:"สีทอง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมสะสมอัญมณีและซื้อการ์ดพัฒนา แข่งกันสร้างเครื่องยนต์ทรัพยากรให้คะแนนพุ่งไวที่สุด",desc_en:"A gem-collecting engine-building game where players buy development cards and race for prestige points.",how:"ในแต่ละเทิร์น ผู้เล่นเลือกเก็บโทเคนอัญมณี จองการ์ด หรือซื้อการ์ดเพื่อนำส่วนลดสีมาใช้ต่อยอด เป้าหมายคือทำคะแนนให้ถึงก่อนคนอื่น",how_en:"On each turn, players collect gem tokens, reserve cards, or buy cards to gain permanent discounts and reach the target score first."},
+      {id:3,name:"PUBG Battlegrounds เดอะบอร์ดเกม",name_en:"PUBG Battlegrounds: The Board Game",image:"https://i.postimg.cc/rwVMFNhT/74k79f.jpg",deposit:1700,players:"2-4",time:"30-45",age:"12+",guide_url:"https://boardgamegeek.com/boardgame/397226/pubg-battlegrounds-the-board-game",checklist:[{category:"Boards",item:"Main map board / tiles",qty:"1 set",note:"นับตามแผ่นที่มีในกล่อง"},{category:"Miniatures",item:"Player miniatures / standees",qty:"1 set",note:"ตามจำนวนตัวละครในชุด"},{category:"Cards",item:"Loot cards",qty:"1 deck",note:"กองไอเท็ม"},{category:"Cards",item:"Weapon cards",qty:"1 deck",note:"กองอาวุธ"},{category:"Cards",item:"Event / AI / mode cards",qty:"1 deck",note:"รวมตามชุดที่แถม"},{category:"Tokens",item:"HP / ammo / status tokens",qty:"1 set",note:"เก็บรวมถุง"},{category:"Dice",item:"Dice",qty:"1 set",note:"นับตามชนิดที่มี"},{category:"Reference",item:"Player aids / scenario sheets",qty:"1 set",note:"เช็กให้ครบ"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"บอร์ดเกมเอาตัวรอดที่ได้อารมณ์เหมือนเกมยิง เลือกเส้นทาง เก็บของ และปะทะกันจนเหลือผู้ชนะ",desc_en:"A survival board game inspired by battle royale shooters where players loot, move, and fight to be the last one standing.",how:"สำรวจแผนที่ เก็บอาวุธและอุปกรณ์ บริหารจังหวะการเคลื่อนที่ และเอาตัวรอดจากวงที่บีบเข้ามา",how_en:"Explore the map, collect weapons and gear, manage movement carefully, and survive the shrinking zone."},
+      {id:4,name:"Dead by Daylight เดอะบอร์ดเกม",name_en:"Dead by Daylight: The Board Game",image:"https://i.postimg.cc/Qxkj3yJ4/Dead_by_Daylight_The_Board_Game_(Thai_version).jpg",deposit:1500,players:"3-5",time:"45",age:"14+",guide_url:"https://boardgamegeek.com/boardgame/358997/dead-by-daylight-the-board-game",checklist:[{category:"Miniatures",item:"Killer miniatures",qty:"7",note:"บาง edition อาจต่างกันเล็กน้อย"},{category:"Miniatures",item:"Survivor miniatures",qty:"7",note:"นับตัวละครฝั่งผู้รอดชีวิต"},{category:"Boards",item:"Map tiles",qty:"6",note:"แผนที่สองหน้า"},{category:"Boards",item:"Character boards",qty:"14",note:"Killer + Survivor boards"},{category:"Cards",item:"Perk cards",qty:"1 deck",note:"กองสกิล"},{category:"Cards",item:"Item cards",qty:"1 deck",note:"กองไอเท็ม"},{category:"Cards",item:"Event / reference cards",qty:"1 set",note:"ตามที่มากับเกม"},{category:"Tokens",item:"Generator / hook / wound / status tokens",qty:"1 set",note:"เก็บรวมถุง"},{category:"Dice",item:"Dice",qty:"5",note:"ตามชุดเกม"},{category:"Markers",item:"First player / entity markers",qty:"1 set",note:"เช็กชิ้นเล็กให้ครบ"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมเอาชีวิตรอดแบบ 1 ปะทะหลายคน ฝั่งผู้รอดชีวิตต้องซ่อมเครื่องและหนี ส่วนฆาตกรต้องตามล่าให้ทัน",desc_en:"An asymmetrical survival game where survivors repair generators and escape while the killer hunts them down.",how:"ฝั่งผู้รอดชีวิตร่วมมือกันซ่อมเครื่องปั่นไฟและหลบการตามล่า ส่วนผู้เล่นฝั่งฆาตกรใช้พลังพิเศษไล่จับให้ครบก่อนจะหนีสำเร็จ",how_en:"Survivors cooperate to repair generators and avoid danger, while the killer uses unique powers to catch them before they escape."},
+      {id:5,name:"Zombicide 2nd Edition ภาษาไทย",name_en:"Zombicide 2nd Edition",image:"https://i.postimg.cc/mgLB2ydk/xpqhjq.png",deposit:2500,players:"1-6",time:"60",age:"13+",guide_url:"https://boardgamegeek.com/boardgame/286751/zombicide-2nd-edition",checklist:[{category:"Miniatures",item:"Survivor miniatures",qty:"6",note:"ตัวผู้รอดชีวิตหลัก"},{category:"Miniatures",item:"Walker miniatures",qty:"40",note:"ซอมบี้เดิน"},{category:"Miniatures",item:"Runner miniatures",qty:"8",note:"ซอมบี้วิ่ง"},{category:"Miniatures",item:"Fatty miniatures",qty:"4",note:"ซอมบี้อ้วน"},{category:"Miniatures",item:"Abomination miniatures",qty:"1",note:"บอสหลัก"},{category:"Boards",item:"Double-sided map tiles",qty:"9",note:"กระดานแผนที่เลขกำกับ"},{category:"Cards",item:"Equipment cards",qty:"1 deck",note:"กองอุปกรณ์"},{category:"Cards",item:"Zombie cards",qty:"1 deck",note:"กองเกิดซอมบี้"},{category:"Boards",item:"Player dashboards",qty:"6",note:"ถาดผู้เล่น"},{category:"Cards",item:"Survivor ID cards",qty:"6",note:"การ์ดตัวละคร"},{category:"Tokens",item:"Noise / objective / door / spawn tokens",qty:"1 set",note:"รวมชิ้นกระดาษทั้งหมด"},{category:"Dice",item:"Dice",qty:"6",note:"ลูกเต๋าหลัก"},{category:"Trackers",item:"Experience / slider pieces",qty:"1 set",note:"ชิ้นเลื่อนบนแดชบอร์ด"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมร่วมมือกันเอาตัวรอดจากซอมบี้แบบแอ็กชันจัดเต็ม เก็บของ อัปเลเวล และเคลียร์ภารกิจ",desc_en:"A fast-paced cooperative zombie survival game with missions, loot, leveling, and swarms of undead.",how:"ผู้เล่นควบคุมตัวละครหลายตัว ทำภารกิจในแผนที่ เก็บอาวุธ และกำจัดซอมบี้ที่เกิดเพิ่มทุกเทิร์น",how_en:"Players control survivors, complete missions, find better gear, and fight zombies that keep spawning each round."},
+      {id:6,name:"อาถรรย์แห่งอาครัม",name_en:"Arkham Horror",image:"https://i.postimg.cc/YqftHszJ/Arkham_Horror_TGG_box_front_png.webp",deposit:1500,players:"1-6",time:"120",age:"14+",guide_url:"https://www.fantasyflightgames.com/en/products/arkham-horror-third-edition/",checklist:[{category:"Boards",item:"Double-sided map tiles",qty:"1 set",note:"แผนที่เมืองเป็นโมดูล"},{category:"Cards",item:"Investigator sheets / cards",qty:"1 set",note:"ตามจำนวนตัวละครในกล่อง"},{category:"Cards",item:"Encounter cards",qty:"1 deck",note:"กองเหตุการณ์"},{category:"Cards",item:"Item / spell / ally cards",qty:"1 set",note:"แยกตามประเภทหากจัดไว้"},{category:"Cards",item:"Scenario / codex cards",qty:"1 set",note:"ตามเนื้อเรื่อง"},{category:"Tokens",item:"Clue / doom / resource / focus tokens",qty:"1 set",note:"รวมชิ้นเล็กทั้งหมด"},{category:"Tokens",item:"Monster tokens / standees",qty:"1 set",note:"เช็กฐานตั้งด้วย"},{category:"Dice",item:"Dice",qty:"5",note:"ลูกเต๋าเกมหลัก"},{category:"Reference",item:"Reference sheets",qty:"1 set",note:"ช่วยอธิบายรอบเกม"},{category:"Rulebook",item:"Learn to Play / Rules Reference",qty:"2",note:"คู่มือ 2 เล่มถ้ามี"}],desc:"เกมร่วมมือกันสืบสวนและต่อกรกับสิ่งลี้ลับในจักรวาล Lovecraft เต็มไปด้วยเหตุการณ์ไม่คาดคิด",desc_en:"A cooperative Lovecraftian adventure game full of investigations, monsters, and unexpected events.",how:"ผู้เล่นรับบทนักสืบ เดินทางเก็บเบาะแส สู้มอนสเตอร์ และปิดประตูมิติให้ทันก่อนโลกจะถูกกลืนกิน",how_en:"Players act as investigators, gathering clues, fighting monsters, and sealing gates before the ancient evil overwhelms the world."},
+      {id:7,name:"Harmonies",name_en:"Harmonies",image:"https://i.postimg.cc/vHLGsNt3/v92068.jpg",deposit:1200,players:"1-4",time:"30",age:"10+",guide_url:"https://www.asmodeenordics.com/product/harmonies/",checklist:[{category:"Boards",item:"Main board",qty:"1",note:"กระดานกลาง"},{category:"Boards",item:"Player boards",qty:"4",note:"กระดานผู้เล่น"},{category:"Cards",item:"Animal cards",qty:"32",note:"การ์ดสัตว์"},{category:"Cards",item:"Help cards",qty:"4",note:"การ์ดช่วยจำ"},{category:"Cards",item:"Nature spirit cards",qty:"10",note:"ใช้ในโหมดเดี่ยว"},{category:"Tiles",item:"Terrain tiles",qty:"120",note:"ชิ้นภูมิประเทศ"},{category:"Tokens",item:"Animal markers",qty:"66",note:"ชิ้นสัตว์"},{category:"Markers",item:"Nature spirit pieces",qty:"4",note:"ชิ้นใส"},{category:"Accessory",item:"Bag",qty:"1",note:"ถุงสุ่มชิ้นส่วน"},{category:"Accessory",item:"Scoring notebook",qty:"1",note:"สมุดคะแนน"},{category:"Rulebook",item:"Instruction booklet",qty:"1",note:"คู่มือหลัก"}],desc:"เกมจัดวางภูมิประเทศสีสวย สร้างถิ่นอาศัยให้สัตว์และทำคะแนนจากแพตเทิร์นที่ลงตัว",desc_en:"A beautiful spatial puzzle game about building landscapes and creating habitats for animals.",how:"เลือกชิ้นภูมิประเทศมาวางบนกระดานส่วนตัวให้ตรงกับเงื่อนไขของการ์ดสัตว์ ยิ่งวางได้สอดคล้องยิ่งทำคะแนนดี",how_en:"Choose terrain tokens and place them on your board to match animal card patterns for higher scores."},
+      {id:8,name:"ผู้ตรวจการแห่งนอตทิงแฮม 2nd Edition",name_en:"Sheriff of Nottingham 2nd Edition",image:"https://i.postimg.cc/SN7mhvfL/zxqvnk.jpg",deposit:1500,players:"3-6",time:"45-60",age:"14+",guide_url:"https://boardgamegeek.com/boardgame/298638/sheriff-of-nottingham-2nd-edition",checklist:[{category:"Cards",item:"Legal goods cards",qty:"1 deck",note:"กองสินค้าถูกกฎหมาย"},{category:"Cards",item:"Contraband / royal goods cards",qty:"1 deck",note:"กองของผิดกฎหมาย / ของพิเศษ"},{category:"Boards",item:"Merchant stand boards",qty:"6",note:"แผงร้านค้า"},{category:"Bags",item:"Merchant bags",qty:"6",note:"ถุงผ้า/ถุงกระดาษตามรุ่น"},{category:"Tokens",item:"Coins / coin tokens",qty:"1 set",note:"ตรวจรวมยอดทั้งหมด"},{category:"Markers",item:"Sheriff marker",qty:"1",note:"ชิ้นนายอำเภอ"},{category:"Reference",item:"Player aid cards",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกม bluff และต่อรองสุดป่วน ลอบขนของ หลอกเจ้าหน้าที่ หรือเนียนให้รอดก็ได้",desc_en:"A bluffing and negotiation game full of smuggling, deception, and risky decisions.",how:"ผลัดกันเป็นนายอำเภอ ตรวจสัมภาระของผู้เล่นคนอื่น ใครจะพูดจริงหรือโกหกต้องวัดใจกันล้วนๆ",how_en:"Players take turns being the sheriff, inspecting others' goods while everyone bluffs and bargains to get contraband through."},
+      {id:9,name:"เจ้าแห่งแวมไพร์ ปะทะ นักล่าปีศาจ",name_en:"Dracula vs Van Helsing",image:"https://i.postimg.cc/28FCDK7n/mx9b5t.jpg",deposit:900,players:"2",time:"20-30",age:"10+",guide_url:"https://boardgamegeek.com/boardgame/381278/dracula-vs-van-helsing",checklist:[{category:"Cards",item:"District / lane cards",qty:"1 set",note:"จัดตาม 5 เขต"},{category:"Cards",item:"Action cards",qty:"1 deck",note:"กองหลักของทั้งสองฝ่าย"},{category:"Tokens",item:"Life / influence tokens",qty:"1 set",note:"เช็กให้ครบทั้งสองสี"},{category:"Markers",item:"Round / effect markers",qty:"1 set",note:"ชิ้นเล็กของเกม"},{category:"Reference",item:"Reference cards",qty:"2",note:"ผู้เล่นละ 1"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมดวลสองฝ่าย ใช้การคาดเดาและวางจังหวะเพื่อไล่ล่าหรือเอาตัวรอด",desc_en:"A two-player duel of deduction and timing as one side hunts while the other tries to survive.",how:"ผู้เล่นผลัดกันขยับตำแหน่ง ใช้ความสามารถเฉพาะ และอ่านใจคู่ต่อสู้เพื่อคว้าชัย",how_en:"Players alternate actions, use special powers, and read the opponent’s moves to claim victory."},
+      {id:10,name:"7 สิ่งมหัศจรรย์ดวล",name_en:"7 Wonders Duel",image:"https://i.postimg.cc/tCH98jW3/1631180210748.jpg",deposit:700,players:"2",time:"30",age:"10+",guide_url:"https://boardgamegeek.com/boardgame/173346/7-wonders-duel",checklist:[{category:"Boards",item:"Game board",qty:"1",note:"สนามทหาร/วิทยาศาสตร์"},{category:"Cards",item:"Age I cards",qty:"23",note:"แยกกอง"},{category:"Cards",item:"Age II cards",qty:"23",note:"แยกกอง"},{category:"Cards",item:"Age III cards",qty:"20",note:"แยกกอง"},{category:"Cards",item:"Guild cards",qty:"7",note:"การ์ดม่วง"},{category:"Cards",item:"Wonder cards",qty:"12",note:"สิ่งมหัศจรรย์"},{category:"Tokens",item:"Progress tokens",qty:"10",note:"โทเคนวิทยาศาสตร์"},{category:"Tokens",item:"Military tokens",qty:"4",note:"-1 / -2 / -5"},{category:"Markers",item:"Conflict pawn",qty:"1",note:"หมากสนามรบ"},{category:"Coins",item:"Coins",qty:"31",note:"1x14, 3x10, 6x7"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมวางแผนอารยธรรมสำหรับ 2 คน แข่งกันชนะด้วยวิทยาศาสตร์ ทหาร หรือคะแนนปลายเกม",desc_en:"A two-player civilization game where you can win by science, military supremacy, or points.",how:"ผู้เล่นผลัดกันเลือกการ์ดจากผังพีระมิดเพื่อสร้างสิ่งปลูกสร้าง เก็บทรัพยากร พัฒนาวิทยาศาสตร์ และบีบคู่แข่งในสนามทหาร",how_en:"Players draft cards from a pyramid display to build structures, collect resources, advance science, and pressure the opponent on the military track."},
+      {id:11,name:"Mind Bug",name_en:"Mind Bug",image:"https://i.postimg.cc/7YMqkWn5/78d01cc5fef605dd0aed2f8ed3513b25.jpg",deposit:900,players:"2",time:"15-25",age:"8+",guide_url:"https://www.google.com/search?q=Mindbug+board+game+rules",checklist:[{category:"Cards",item:"Creature cards",qty:"48",note:"กองหลักของเกมต้นฉบับ"},{category:"Tokens",item:"Mindbug tokens",qty:"4",note:"ผู้เล่นละ 2"},{category:"Trackers",item:"Life trackers / life counters",qty:"2",note:"ผู้เล่นละ 1"},{category:"Reference",item:"Reference cards",qty:"2",note:"ผู้เล่นละ 1"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมการ์ดดวลเร็ว ใช้มอนสเตอร์พลังแปลกและจังหวะชิงไหวชิงพริบ",desc_en:"A fast tactical card duel featuring strange monsters and clever timing.",how:"สลับกันลงการ์ดโจมตี แต่ต้องระวังการใช้ Mind Bug ที่อาจโดนแย่งมอนสเตอร์สำคัญไปกลางคัน",how_en:"Take turns playing creatures and attacking, but watch out for Mind Bug moments that let your opponent steal your key monster."},
+      {id:12,name:"มัฟฟินไทม์",name_en:"Muffin Time",image:"https://i.postimg.cc/dtKJgYr8/i8b5yb.png",deposit:1000,players:"2-6",time:"20-40",age:"13+",guide_url:"https://www.google.com/search?q=Muffin+Time+board+game+rules",checklist:[{category:"Cards",item:"Action cards",qty:"1 deck",note:"การ์ดเอฟเฟกต์หลัก"},{category:"Cards",item:"Trap / counter cards",qty:"1 deck",note:"นับรวมในกองถ้าไม่ได้แยก"},{category:"Cards",item:"Rule cards / win condition cards",qty:"1 set",note:"ตามรุ่นที่มี"},{category:"Reference",item:"Player aids",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมปาร์ตี้สายป่วน กติกาพลิกไปมา มีทั้งแกล้งกันและวางกับดักกันฮาๆ",desc_en:"A chaotic party card game filled with pranks, traps, and constantly changing rules.",how:"จั่วและเล่นการ์ดที่มีเอฟเฟกต์แสบๆ ตั้งเงื่อนไขให้ตัวเองชนะก่อนคนอื่น",how_en:"Draw and play wild effect cards, set tricky win conditions, and try to be the first to meet one."},
+      {id:13,name:"สกัล วาง ท้า ดวล",name_en:"Skull",image:"https://i.postimg.cc/nctnNJBK/th_11134207_7r98s_lqigqvql57fo11.jpg",deposit:700,players:"3-6",time:"20-30",age:"10+",guide_url:"https://www.google.com/search?q=Skull+board+game+rules",checklist:[{category:"Discs",item:"Flower discs",qty:"18",note:"ผู้เล่นละ 3 ถ้าเล่น 6 คน"},{category:"Discs",item:"Skull discs",qty:"6",note:"ผู้เล่นละ 1"},{category:"Mat",item:"Player mats / cloth coasters",qty:"6 sets",note:"ขึ้นกับ edition"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมบลัฟฟ์เรียบง่ายแต่คมมาก ต้องกล้าท้าและเดาใจฝ่ายตรงข้ามให้แม่น",desc_en:"A sharp bluffing game that is simple to learn but full of tense mind games.",how:"ผู้เล่นลงแผ่นดอกไม้หรือหัวกะโหลกคว่ำหน้า แล้วเปิดประมูลว่าใครกล้าเปิดได้กี่ใบโดยไม่เจอหัวกะโหลก",how_en:"Players place flowers or skulls face down, then bid on how many they can reveal without hitting a skull."},
+      {id:14,name:"1 คืนปริศนาเกมล่ามนุษย์หมาป่า",name_en:"One Night Ultimate Werewolf",image:"https://i.postimg.cc/zX1q4rKH/SIAMBOARDGAMES_SIAMBOARDGAMESONENIGHTULTIMATEWEREWOLFTH_MKP1790246_1.webp",deposit:700,players:"3-10",time:"10",age:"8+",guide_url:"https://boardgamegeek.com/boardgame/147949/one-night-ultimate-werewolf",checklist:[{category:"Cards",item:"Role cards",qty:"16",note:"กองบทบาทหลัก"},{category:"Tokens",item:"Role tokens",qty:"16",note:"โทเคนตามบทบาท"},{category:"Tokens",item:"Artifact / center tokens",qty:"1 set",note:"อาจต่างกันตาม edition"},{category:"App",item:"Companion app / timer",qty:"1",note:"ใช้งานผ่านมือถือได้"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมปาร์ตี้สายจับผิด เล่นไวมาก บทบาทสลับไปมาและเดายากสุดๆ",desc_en:"A fast social deduction party game with hidden roles, shifting identities, and lots of debate.",how:"แต่ละคนได้รับบทลับและใช้ความสามารถตอนกลางคืน จากนั้นถกเถียงกันตอนกลางวันเพื่อหาว่าใครคือมนุษย์หมาป่า",how_en:"Each player gets a secret role, uses special powers at night, then debates during the day to find the werewolf."},
+      {id:15,name:"เซเลสเทีย",name_en:"Celestia",image:"https://i.postimg.cc/xTS9B2Mq/Celestia_(Thai_version).jpg",deposit:1300,players:"2-6",time:"30",age:"8+",guide_url:"https://boardgamegeek.com/boardgame/175117/celestia",checklist:[{category:"Board",item:"Airship board / track",qty:"1",note:"เรือเหาะหลัก"},{category:"Dice",item:"Dice",qty:"4",note:"ชนิดอุปสรรคหลัก"},{category:"Cards",item:"Treasure cards",qty:"1 set",note:"แยกตามเมืองถ้าจัดไว้"},{category:"Cards",item:"Equipment cards",qty:"1 deck",note:"กองไอเท็มช่วยผ่านอุปสรรค"},{category:"Tokens",item:"Passenger pawns",qty:"1 set",note:"ตามจำนวนผู้เล่น"},{category:"Markers",item:"Captain marker",qty:"1",note:"ชี้ตำแหน่งกัปตัน"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมผจญภัยบนเรือเหาะ จะไปต่อหรือโดดลงเก็บแต้มก่อนดี ต้องเสี่ยงอย่างมีสไตล์",desc_en:"A stylish airship adventure game where players decide whether to stay on board or jump off with treasure.",how:"กัปตันต้องทอยและเล่นการ์ดผ่านอุปสรรค ส่วนผู้เล่นคนอื่นตัดสินใจว่าจะอยู่บนเรือต่อหรือรีบลงเก็บสมบัติ",how_en:"The captain rolls and plays cards to overcome obstacles while the other players decide whether to stay aboard or leave with their treasure."},
+      {id:16,name:"ผีถ้วยแก้ว",name_en:"Spirit Board",image:"https://i.postimg.cc/Prkd0jYr/pid_217058.jpg",deposit:900,players:"2-8",time:"15-30",age:"8+",guide_url:"https://www.google.com/search?q=Spirit+Board+board+game+rules",checklist:[{category:"Board",item:"Spirit board",qty:"1",note:"กระดานหลัก"},{category:"Piece",item:"Planchette / pointer",qty:"1",note:"ชิ้นชี้ตัวอักษร"},{category:"Cards",item:"Prompt / challenge cards",qty:"1 deck",note:"ถ้า edition มีการ์ด"},{category:"Tokens",item:"Score / sanity / phase tokens",qty:"1 set",note:"รวมชิ้นเล็กทั้งหมด"},{category:"Reference",item:"Reference sheet",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมปาร์ตี้บรรยากาศลึกลับ เล่นง่าย และมีจังหวะชวนลุ้นตลอดเวลา",desc_en:"A spooky party game with simple rules and suspenseful moments throughout.",how:"ทำตามเงื่อนไขการ์ดและกติกาของเกม ใช้การสังเกตและความจำเพื่อเอาตัวรอดหรือเก็บคะแนน",how_en:"Follow the card effects and game rules, using observation and memory to survive or score points."},
+      {id:18,name:"ทีมค้นหา ไฟฉายมหัศจรรย์",name_en:"Spotlight",image:"https://i.postimg.cc/9FjcshZ4/zo.jpg",deposit:1000,players:"1-5",time:"15-20",age:"4+",guide_url:"https://boardgamegeek.com/boardgame/420876/spotlight",checklist:[{category:"Boards",item:"Scene boards",qty:"1 set",note:"แผ่นภาพหลักตามด่าน"},{category:"Cards",item:"Search cards / target cards",qty:"1 set",note:"กองเป้าหมายที่ต้องหา"},{category:"Pieces",item:"Flashlight pieces",qty:"1 set",note:"แผ่นไฟฉายสำหรับส่อง"},{category:"Markers",item:"Moon / player pawns",qty:"1 set",note:"ชิ้นเดินบนแทร็ก"},{category:"Track",item:"Progress track board",qty:"1",note:"ถ้ามีแยกจากฉาก"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมครอบครัวสำหรับเด็กและผู้ใหญ่ ใช้แผ่นไฟฉายค้นหาของในภาพอย่างสนุก",desc_en:"A family-friendly search game where players use a flashlight effect to find hidden objects.",how:"ส่องไฟฉายกระดาษไปบนฉากเพื่อหาเป้าหมายที่ซ่อนอยู่ แล้วช่วยกันทำภารกิจให้ครบ",how_en:"Move the paper flashlight over the scene to find hidden targets and complete the mission together."},
+      {id:19,name:"ต่าย ตัก ติม",name_en:"Bunny Scoop",image:"https://i.postimg.cc/MK8zgSVx/pic9232481_png.webp",deposit:1500,players:"2-4",time:"15-20",age:"6+",guide_url:"https://www.google.com/search?q=Bunny+Scoop+board+game+rules",checklist:[{category:"Pieces",item:"Bunny figures / scoops",qty:"1 set",note:"ตามสีผู้เล่น"},{category:"Cards",item:"Order / target cards",qty:"1 deck",note:"กองเป้าหมาย"},{category:"Tokens",item:"Ice cream / topping pieces",qty:"1 set",note:"นับรวมทุกสี"},{category:"Boards",item:"Player boards / bowls",qty:"1 set",note:"อุปกรณ์ประจำผู้เล่น"},{category:"Markers",item:"Score markers",qty:"1 set",note:"ชิ้นแต้ม"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมครอบครัวธีมน่ารัก เล่นง่าย จังหวะเร็ว เหมาะกับทุกวัย",desc_en:"A cute and easy family game with quick turns and simple fun for all ages.",how:"ทำตามกติกาของการ์ดหรืออุปกรณ์ในเกม เพื่อเก็บคะแนนหรือไปถึงเป้าหมายก่อน",how_en:"Follow the card effects and game tools to score points or reach the goal first."},
+      {id:20,name:"ชีพจรลงเท้า: เกมแห่งการเดินทาง",name_en:"Itchy Feet: The Travel Game",image:"https://i.postimg.cc/sDR3br7z/DICECUPBOARDGAME_ITCHYFEETTHAIVERSIONBOARDGAME_MKP2064590_1.webp",deposit:900,players:"2-4",time:"45-60",age:"10+",guide_url:"https://boardgamegeek.com/boardgame/230667/itchy-feet-the-travel-game",checklist:[{category:"Board",item:"World map board",qty:"1",note:"กระดานแผนที่โลก"},{category:"Cards",item:"Country cards",qty:"1 deck",note:"กองประเทศปลายทาง"},{category:"Cards",item:"Item cards",qty:"1 deck",note:"ของใช้สำหรับเดินทาง"},{category:"Cards",item:"Event / travel cards",qty:"1 deck",note:"กองเหตุการณ์"},{category:"Tokens",item:"Passport / travel markers",qty:"1 set",note:"รวมชิ้นเล็กทั้งหมด"},{category:"Pawns",item:"Player pawns",qty:"4",note:"ตามจำนวนผู้เล่น"},{category:"Reference",item:"Player aids",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมเดินทางรอบโลก วางแผนเส้นทาง เก็บประสบการณ์ และรับมือเหตุการณ์ชวนป่วน",desc_en:"A globe-trotting travel game about planning routes, gaining experiences, and handling unexpected events.",how:"ใช้การ์ดและแผนที่เพื่อเดินทางไปยังจุดหมายต่างๆ บริหารทรัพยากรและตัดสินใจเลือกเส้นทางที่คุ้มที่สุด",how_en:"Use cards and the map to travel to destinations, manage resources, and choose the most rewarding route."},
+      {id:21,name:"X-Virus",name_en:"X-Virus",image:"https://i.postimg.cc/65NBFXnN/images_19.jpg",deposit:800,players:"2-6",time:"15-25",age:"8+",guide_url:"https://www.google.com/search?q=X-Virus+board+game+rules",checklist:[{category:"Cards",item:"Virus / organ cards",qty:"1 deck",note:"กองไพ่หลัก"},{category:"Cards",item:"Medicine / treatment cards",qty:"1 deck",note:"แยกตามสีถ้าจัดไว้"},{category:"Cards",item:"Special action cards",qty:"1 deck",note:"นับรวมในกองหลักได้"},{category:"Reference",item:"Quick reference",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมการ์ดไวๆ ที่ต้องกำจัดไวรัสและป้องกันการติดเชื้อของตัวเอง",desc_en:"A quick card game about curing viruses and protecting yourself from infection.",how:"ลงการ์ดยา วัคซีน หรือไวรัสใส่ผู้เล่นคนอื่น จัดการไพ่ในมือให้ดีเพื่อเป็นคนสุดท้ายที่รอด",how_en:"Play medicine, vaccine, or virus cards against others and manage your hand wisely to be the last one standing."},
+      {id:22,name:"The Lord of the Rings: Duel for Middle-Earth",name_en:"The Lord of the Rings: Duel for Middle-Earth",image:"https://i.postimg.cc/J4WRSLZL/%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A5%E0%B8%AD%E0%B8%A3_%E0%B8%94%E0%B8%AD%E0%B8%AD%E0%B8%9F%E0%B9%80%E0%B8%94%E0%B8%AD%E0%B8%B0%E0%B8%A3_%E0%B8%87%E0%B8%AA_%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%A1%E0%B8%94%E0%B8%A7%E0%B8%A5%E0%B8%8A_%E0%B8%87%E0%B8%9E_%E0%B8%A0%E0%B8%9E_(The_Lord_of_the_Rings_Duel_for_Middle_earth).jpg",deposit:1500,players:"2",time:"30-45",age:"10+",guide_url:"https://boardgamegeek.com/boardgame/421006/the-lord-of-the-rings-duel-for-middle-earth",checklist:[{category:"Board",item:"Main board",qty:"1",note:"สนามหลักของสงคราม"},{category:"Cards",item:"Chapter / display cards",qty:"1 set",note:"กองการ์ดแต่ละบท"},{category:"Cards",item:"Location / realm cards",qty:"1 set",note:"ตามระบบเกม"},{category:"Tiles",item:"Landmark / special tiles",qty:"1 set",note:"ชิ้นเงื่อนไขพิเศษ"},{category:"Tokens",item:"Faction / influence tokens",qty:"1 set",note:"ชิ้นฝ่ายต่างๆ"},{category:"Pawns",item:"Fellowship / Sauron markers",qty:"1 set",note:"หมากฝ่ายผู้เล่น"},{category:"Coins",item:"Coins / resource tokens",qty:"1 set",note:"ถ้ามีในกล่อง"},{category:"Rulebook",item:"Rulebook",qty:"1",note:"คู่มือหลัก"}],desc:"เกมดวลสำหรับ 2 คนในธีมลอร์ดออฟเดอะริงส์ วางแผน คุมพื้นที่ และแข่งชิงเงื่อนไขชนะ",desc_en:"A two-player duel set in Middle-earth where players plan carefully, control areas, and race toward victory conditions.",how:"เลือกการ์ดและใช้ความสามารถของฝ่ายตัวเองเพื่อสร้างความได้เปรียบทั้งในแผนที่และเป้าหมายพิเศษของเกม",how_en:"Choose cards and use your faction abilities to gain advantages on the map and pursue special victory goals."}
     ];
 
     let games = loadGames();
@@ -1321,6 +1573,14 @@
     const modalDesc = document.getElementById("modalDesc");
     const modalHow = document.getElementById("modalHow");
     const modalRentBtn = document.getElementById("modalRentBtn");
+    const modalChecklistBtn = document.getElementById("modalChecklistBtn");
+    const modalGuideBtn = document.getElementById("modalGuideBtn");
+
+    const checklistModal = document.getElementById("checklistModal");
+    const checklistBody = document.getElementById("checklistBody");
+    const checklistMeta = document.getElementById("checklistMeta");
+    const checklistEmpty = document.getElementById("checklistEmpty");
+    const checklistPlayBtn = document.getElementById("checklistPlayBtn");
 
     const loginModal = document.getElementById("loginModal");
     const adminModal = document.getElementById("adminModal");
@@ -1330,28 +1590,48 @@
     }
 
     function sanitizeGames(list){
+      const defaultGames = Array.isArray(INITIAL_GAMES) ? INITIAL_GAMES : [];
       return (Array.isArray(list) ? list : [])
         .filter(game => {
           const thName = (game.name || "").trim();
           const enName = (game.name_en || "").trim();
           return thName !== "ตลกโยคะ" && enName !== "Yoga Party";
         })
-        .map((game, index) => ({
-          id: Number(game.id) || index + 1,
-          name: game.name || "",
-          name_en: game.name_en || game.name || "",
-          image: game.image || "",
-          deposit: Number(game.deposit || 0),
-          players: game.players || "",
-          time: game.time || "",
-          age: game.age || "",
-          desc: game.desc || "",
-          desc_en: game.desc_en || game.desc || "",
-          how: game.how || "",
-          how_en: game.how_en || game.how || "",
-          unavailable: Boolean(game.unavailable),
-          available_date: game.available_date || ""
-        }));
+        .map((game, index) => {
+          const fallback = defaultGames.find(def =>
+            (Number(def.id) && Number(game.id) && Number(def.id) === Number(game.id)) ||
+            ((def.name || "").trim() && (def.name || "").trim() === (game.name || "").trim()) ||
+            ((def.name_en || "").trim() && (def.name_en || "").trim() === (game.name_en || "").trim())
+          ) || {};
+
+          const safeChecklist = Array.isArray(game.checklist) && game.checklist.length
+            ? game.checklist
+            : (Array.isArray(fallback.checklist) ? fallback.checklist : []);
+
+          return {
+            id: Number(game.id) || index + 1,
+            name: game.name || fallback.name || "",
+            name_en: game.name_en || fallback.name_en || game.name || fallback.name || "",
+            image: game.image || fallback.image || "",
+            deposit: Number(game.deposit ?? fallback.deposit ?? 0),
+            players: game.players || fallback.players || "",
+            time: game.time || fallback.time || "",
+            age: game.age || fallback.age || "",
+            desc: game.desc || fallback.desc || "",
+            desc_en: game.desc_en || fallback.desc_en || game.desc || fallback.desc || "",
+            how: game.how || fallback.how || "",
+            how_en: game.how_en || fallback.how_en || game.how || fallback.how || "",
+            guide_url: game.guide_url || fallback.guide_url || "",
+            checklist: safeChecklist.map(item => ({
+              category: item.category || "",
+              item: item.item || "",
+              qty: item.qty || "",
+              note: item.note || ""
+            })).filter(item => item.item),
+            unavailable: Boolean(game.unavailable),
+            available_date: game.available_date || fallback.available_date || ""
+          };
+        });
     }
 
     function normalizeGameIds(){
@@ -1394,6 +1674,46 @@
       return lang === "th" ? (game.how || "-") : (game.how_en || game.how || "-");
     }
 
+    function parseChecklistText(text){
+      return String(text || "")
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => {
+          const parts = line.split("|").map(part => part.trim());
+          return {
+            category: parts[0] || "ทั่วไป",
+            item: parts[1] || "",
+            qty: parts[2] || "",
+            note: parts[3] || ""
+          };
+        })
+        .filter(entry => entry.item);
+    }
+
+    function checklistToText(list){
+      return (Array.isArray(list) ? list : [])
+        .map(entry => [entry.category || "", entry.item || "", entry.qty || "", entry.note || ""].join(" | "))
+        .join("\n");
+    }
+
+    function escapeHtml(value){
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function openGuideLink(game){
+      if(game && game.guide_url){
+        window.open(game.guide_url, "_blank", "noopener,noreferrer");
+      } else {
+        alert(t("guideUnavailable"));
+      }
+    }
+
     function formatAvailableDate(dateStr){
       if(!dateStr) return "";
       const [y,m,d] = String(dateStr).split("-");
@@ -1426,7 +1746,7 @@
         "openAdminBtn","loginTitle","userLabel","passLabel","loginBtn","adminHeaderTitle",
         "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fNameEnLabel","fDepositLabel",
         "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fUnavailableLabel","fAvailableDateLabel","fDescThLabel","fDescEnLabel",
-        "fHowThLabel","fHowEnLabel","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm"
+        "fHowThLabel","fHowEnLabel","fGuideUrlLabel","fGuideUrlHelp","fChecklistLabel","fChecklistHelp","fillChecklistTemplateBtn","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm","checklistModalTitle","checklistModalSub","checklistPrintBtn","checklistExportBtn","checklistCloseBtnFooter","checklistFooterNote","clHeadCategory","clHeadItem","clHeadQty","clHeadSend","clHeadReceive","clHeadReturn","clHeadNote","checklistEmpty"
       ];
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1441,6 +1761,9 @@
       if(summaryConfirmEl) summaryConfirmEl.innerHTML = t("summaryConfirm");
       const lineBtnTextEl = document.getElementById("lineBtnText");
       if(lineBtnTextEl) lineBtnTextEl.textContent = t("lineBtnText");
+      if(modalChecklistBtn) modalChecklistBtn.textContent = t("checklistBtn");
+      if(modalGuideBtn) modalGuideBtn.textContent = t("guideBtn");
+      if(checklistPlayBtn) checklistPlayBtn.textContent = t("guideBtn");
 
       days.placeholder = t("daysPlaceholder");
       document.documentElement.lang = lang;
@@ -1537,6 +1860,14 @@
         modalRentBtn.textContent = t("rentNow");
         modalRentBtn.disabled = !!game.unavailable;
       }
+      if(modalChecklistBtn){
+        modalChecklistBtn.textContent = t("checklistBtn");
+      }
+      if(modalGuideBtn){
+        modalGuideBtn.textContent = t("guideBtn");
+        modalGuideBtn.href = game.guide_url || "#";
+        modalGuideBtn.style.opacity = game.guide_url ? "1" : ".55";
+      }
       gameModal.classList.add("show");
     }
 
@@ -1550,6 +1881,61 @@
       updateSummary();
       gameModal.classList.remove("show");
       document.getElementById("rentSection").scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    function openChecklistModal(gameId){
+      const game = games.find(g => g.id === Number(gameId));
+      if(!game) return;
+      const list = Array.isArray(game.checklist) ? game.checklist : [];
+      const meta = [
+        `${gameName(game)}`,
+        `${t("depositPrefix")} ${money(game.deposit)}`,
+        `${game.players || "-"} ${t("playersUnit")}`,
+        `${game.time || "-"} ${t("minsUnit")}`
+      ];
+      checklistMeta.innerHTML = meta.map(text => `<div class="meta-chip">${escapeHtml(text)}</div>`).join("");
+      checklistBody.innerHTML = "";
+      let currentGroup = "";
+      list.forEach((entry, index) => {
+        const group = entry.category || (lang === "th" ? "ทั่วไป" : "General");
+        if(group !== currentGroup){
+          currentGroup = group;
+          const groupRow = document.createElement("tr");
+          groupRow.className = "group-row";
+          groupRow.innerHTML = `<td colspan="8">${escapeHtml(group)}</td>`;
+          checklistBody.appendChild(groupRow);
+        }
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${escapeHtml(entry.category || "-")}</td>
+          <td>${escapeHtml(entry.item || "-")}</td>
+          <td>${escapeHtml(entry.qty || "-")}</td>
+          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
+          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
+          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
+          <td>${escapeHtml(entry.note || "-")}</td>
+        `;
+        checklistBody.appendChild(row);
+      });
+      checklistEmpty.style.display = list.length ? "none" : "block";
+      if(checklistPlayBtn){
+        checklistPlayBtn.textContent = t("guideBtn");
+        checklistPlayBtn.href = game.guide_url || "#";
+        checklistPlayBtn.style.opacity = game.guide_url ? "1" : ".55";
+      }
+      checklistModal.classList.add("show");
+    }
+
+    function printChecklist(mode = "print") {
+      const originalTitle = document.title;
+      document.title = `${t("printFilePrefix")}-${(modalTitle.textContent || 'Boardgame').replace(/[\\/:*?"<>|]+/g, ' ')}`;
+      document.body.classList.add("printing-checklist");
+      setTimeout(() => {
+        window.print();
+        document.body.classList.remove("printing-checklist");
+        document.title = originalTitle;
+      }, mode === "pdf" ? 120 : 50);
     }
 
     function updateSummary(){
@@ -1661,6 +2047,7 @@
             <div style="color:#666;margin-top:2px">${game.name_en || game.name || ""}</div>
             <div style="color:#666;margin-top:4px">${t("depositPrefix")} ${money(game.deposit)} • ${game.players || "-"} ${t("playersUnit")} • ${game.time || "-"} ${t("minsUnit")}</div>
             <div style="color:${game.unavailable ? "#a11" : "#216b2f"};margin-top:6px;font-weight:800">${game.unavailable ? t("unavailableNow") + (game.available_date ? " • " + t("availableOn") + " " + formatAvailableDate(game.available_date) : "") : t("availableNow")}</div>
+            <div style="color:#666;margin-top:6px">${(game.checklist || []).length} checklist item(s)${game.guide_url ? " • Guide link ready" : ""}</div>
           </div>
           <div class="admin-actions">
             <button class="small-btn small-edit">${t("editBtn")}</button>
@@ -1689,6 +2076,8 @@
       document.getElementById("fDescEn").value = "";
       document.getElementById("fHowTh").value = "";
       document.getElementById("fHowEn").value = "";
+      document.getElementById("fGuideUrl").value = "";
+      document.getElementById("fChecklist").value = "";
     }
 
     function editGame(id){
@@ -1709,6 +2098,8 @@
       document.getElementById("fDescEn").value = game.desc_en || "";
       document.getElementById("fHowTh").value = game.how || "";
       document.getElementById("fHowEn").value = game.how_en || "";
+      document.getElementById("fGuideUrl").value = game.guide_url || "";
+      document.getElementById("fChecklist").value = checklistToText(game.checklist || []);
       const formCard = document.getElementById("adminFormTitle")?.closest(".card");
       if(formCard) formCard.scrollIntoView({ behavior:"smooth", block:"start" });
       setTimeout(() => document.getElementById("fName")?.focus(), 120);
@@ -1728,7 +2119,9 @@
         desc: document.getElementById("fDescTh").value.trim(),
         desc_en: document.getElementById("fDescEn").value.trim(),
         how: document.getElementById("fHowTh").value.trim(),
-        how_en: document.getElementById("fHowEn").value.trim()
+        how_en: document.getElementById("fHowEn").value.trim(),
+        guide_url: document.getElementById("fGuideUrl").value.trim(),
+        checklist: parseChecklistText(document.getElementById("fChecklist").value)
       };
 
       if(!data.name){
@@ -1925,10 +2318,41 @@
     if(modalRentBtn){
       modalRentBtn.addEventListener("click", () => rentGameNow(currentModalGameId));
     }
+    if(modalChecklistBtn){
+      modalChecklistBtn.addEventListener("click", () => openChecklistModal(currentModalGameId));
+    }
+    if(modalGuideBtn){
+      modalGuideBtn.addEventListener("click", (e) => {
+        const game = games.find(g => g.id === currentModalGameId);
+        if(!game || !game.guide_url){
+          e.preventDefault();
+          openGuideLink(game);
+        }
+      });
+    }
+    document.getElementById("checklistCloseBtn").addEventListener("click", ()=>checklistModal.classList.remove("show"));
+    document.getElementById("checklistCloseBtnFooter").addEventListener("click", ()=>checklistModal.classList.remove("show"));
+    document.getElementById("checklistPrintBtn").addEventListener("click", ()=>printChecklist("print"));
+    document.getElementById("checklistExportBtn").addEventListener("click", ()=>printChecklist("pdf"));
+    if(checklistPlayBtn){
+      checklistPlayBtn.addEventListener("click", (e) => {
+        const game = games.find(g => g.id === currentModalGameId);
+        if(!game || !game.guide_url){
+          e.preventDefault();
+          openGuideLink(game);
+        }
+      });
+    }
+    document.getElementById("fillChecklistTemplateBtn").addEventListener("click", () => {
+      const el = document.getElementById("fChecklist");
+      if(!el.value.trim()) el.value = t("checklistTemplate");
+      else el.value += `\n${t("checklistTemplate")}`;
+    });
     closeGameModal.addEventListener("click", ()=>gameModal.classList.remove("show"));
     gameModal.addEventListener("click", e => { if(e.target === gameModal) gameModal.classList.remove("show"); });
     loginModal.addEventListener("click", e => { if(e.target === loginModal) loginModal.classList.remove("show"); });
     adminModal.addEventListener("click", e => { if(e.target === adminModal) adminModal.classList.remove("show"); });
+    checklistModal.addEventListener("click", e => { if(e.target === checklistModal) checklistModal.classList.remove("show"); });
 
     (async function initApp(){
       renderAll();
@@ -1936,7 +2360,8 @@
       if(gistIdInput && !gistIdInput.value && DEFAULT_GIST_ID){
         gistIdInput.value = DEFAULT_GIST_ID;
       }
-      await loadFromGist();
+      // Auto-loading Gist is disabled here to prevent older remote data from overwriting the bundled checklist and guide links.
+      // Use the Admin button "ดึงข้อมูลจาก Gist" manually when needed.
     })();
   </script>
 </body>
