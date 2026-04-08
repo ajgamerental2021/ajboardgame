@@ -824,8 +824,6 @@
         border-radius:0 !important;
       }
       body.printing-checklist #checklistCloseBtn,
-      body.printing-checklist #checklistPrintBtn,
-      body.printing-checklist #checklistExportBtn,
       body.printing-checklist #checklistCloseBtnFooter,
       body.printing-checklist #checklistPlayBtn,
       body.printing-checklist .checklist-toolbar .btn,
@@ -1046,37 +1044,19 @@
   </div>
 
   <div class="modal" id="checklistModal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:960px">
       <button class="close-btn" id="checklistCloseBtn">×</button>
       <div class="admin-wrap">
         <h3 style="margin:0 0 8px" id="checklistModalTitle">Check List อุปกรณ์</h3>
-        <div style="color:#666;line-height:1.6" id="checklistModalSub">ตรวจอุปกรณ์ก่อนส่งของ / ได้รับของ / รับคืนของ แล้วพิมพ์หรือ Export เป็น PDF ได้ทันที</div>
+        <div style="color:#666;line-height:1.6" id="checklistModalSub">กดดูภาพรายการอุปกรณ์ของเกมนี้จาก URL ที่ตั้งค่าไว้ในหน้า Admin</div>
         <div class="checklist-meta" id="checklistMeta"></div>
-        <div class="checklist-toolbar">
-          <button class="btn btn-primary" id="checklistPrintBtn" type="button">🖨️ พิมพ์ Check List</button>
-          <button class="btn btn-secondary" id="checklistExportBtn" type="button">📄 Export to PDF</button>
-          <a class="detail-btn" id="checklistPlayBtn" href="#" target="_blank" rel="noopener noreferrer">📘 วิธีการเล่นแบบละเอียด</a>
+        <div class="checklist-image-wrap" style="margin-top:16px">
+          <img id="checklistImage" src="" alt="Checklist image" style="width:100%;height:auto;display:none;border-radius:18px;border:1px solid #e8e8e8;box-shadow:var(--shadow);background:#fff;">
+          <div class="checklist-empty" id="checklistEmpty" style="display:none">ยังไม่ได้ใส่ URL รูป Check List สำหรับเกมนี้ สามารถเพิ่มได้จากหน้า Admin</div>
         </div>
-        <div class="checklist-table-wrap">
-          <table class="checklist-table">
-            <thead>
-              <tr>
-                <th style="width:64px">#</th>
-                <th style="width:180px" id="clHeadCategory">หมวด</th>
-                <th id="clHeadItem">รายการอุปกรณ์</th>
-                <th style="width:90px" id="clHeadQty">จำนวน</th>
-                <th class="tick-cell" id="clHeadSend">ส่งของ</th>
-                <th class="tick-cell" id="clHeadReceive">ได้รับของ</th>
-                <th class="tick-cell" id="clHeadReturn">รับคืนของ</th>
-                <th style="width:180px" id="clHeadNote">หมายเหตุ</th>
-              </tr>
-            </thead>
-            <tbody id="checklistBody"></tbody>
-          </table>
-        </div>
-        <div class="checklist-empty" id="checklistEmpty" style="display:none">ยังไม่มีรายการ Check List ของเกมนี้ สามารถเพิ่มหรือแก้ไขได้จากหน้า Admin</div>
-        <div class="checklist-note" id="checklistFooterNote">หมายเหตุ: ช่องติ๊กนี้เป็นตัวช่วยตรวจความครบของอุปกรณ์ในแต่ละช่วงงาน และจะไม่ถูกบันทึกถาวรหลังรีเฟรชหน้า ข้อมูล Check List นี้อ้างอิงจากคู่มือ/หน้าสินค้า/แหล่งข้อมูลเกม และอาจต่างกันเล็กน้อยตาม edition ซึ่งสามารถแก้ไขได้จากหน้า Admin</div>
         <div class="btn-row">
+          <a class="detail-btn" id="checklistOpenImageBtn" href="#" target="_blank" rel="noopener noreferrer">🖼️ เปิดรูปเต็ม</a>
+          <a class="detail-btn" id="checklistPlayBtn" href="#" target="_blank" rel="noopener noreferrer">📘 วิธีการเล่นแบบละเอียด</a>
           <button class="btn btn-secondary" id="checklistCloseBtnFooter" type="button">ปิดหน้าต่าง</button>
         </div>
       </div>
@@ -1204,16 +1184,9 @@
               <div class="admin-help" id="fGuideUrlHelp">ใส่ลิงก์สำหรับปุ่มวิธีการเล่นแบบละเอียด เช่น BGG, PDF, YouTube หรือเว็บคู่มือเกม</div>
             </div>
             <div class="field span-2">
-              <label id="fChecklistLabel">Check List อุปกรณ์ในกล่อง</label>
-              <textarea id="fChecklist" rows="10" placeholder="หมวด | รายการ | จำนวน | หมายเหตุ
-ตัวอย่าง:
-การ์ด | Starter Cards | 54 | ไพ่เริ่มต้น
-โทเคน | Gem Tokens | 40 | 5 สี
-กระดาน | Main Board | 1 | -"></textarea>
-              <div class="admin-help" id="fChecklistHelp">ใส่ 1 รายการต่อ 1 บรรทัด โดยใช้ | คั่นเป็น: หมวด | รายการ | จำนวน | หมายเหตุ</div>
-              <div class="admin-mini-actions">
-                <button class="btn btn-secondary" id="fillChecklistTemplateBtn" type="button">เติมตัวอย่างรูปแบบ</button>
-              </div>
+              <label id="fChecklistLabel">URL รูป Check List อุปกรณ์</label>
+              <input type="text" id="fChecklistImageUrl" placeholder="https://...">
+              <div class="admin-help" id="fChecklistHelp">ใส่ลิงก์รูปภาพของรายการอุปกรณ์ เมื่อกดปุ่ม 📋 Check List อุปกรณ์ ระบบจะโชว์รูปนี้ใน Popup</div>
             </div>
           </div>
           <div class="btn-row">
@@ -1229,7 +1202,7 @@
 
   <script>
     const RENT_PER_DAY = 90;
-    const STORAGE_KEY = "aj_boardgame_admin_v21_fullchecklist_fix";
+    const STORAGE_KEY = "aj_boardgame_admin_v21_checklist_image";
     const GIST_CONFIG_KEY = "aj_boardgame_gist_config_v1";
     const GIST_FILENAME = "aj-boardgame-games.json";
     const DEFAULT_GIST_ID = "deb64cfa7e0c18c37303452f6a0a7ff1";
@@ -1357,25 +1330,22 @@
         checklistBtn: "📋 Check List อุปกรณ์",
         guideBtn: "📘 วิธีการเล่นแบบละเอียด",
         checklistModalTitle: "Check List อุปกรณ์",
-        checklistModalSub: "ตรวจอุปกรณ์ก่อนส่งของ / ได้รับของ / รับคืนของ แล้วพิมพ์หรือ Export เป็น PDF ได้ทันที",
-        checklistPrintBtn: "🖨️ พิมพ์ Check List",
-        checklistExportBtn: "📄 Export to PDF",
+        checklistModalSub: "กดดูภาพรายการอุปกรณ์ของเกมนี้จาก URL ที่ตั้งค่าไว้ในหน้า Admin",
+        checklistOpenImageBtn: "🖼️ เปิดรูปเต็ม",
         checklistCloseBtnFooter: "ปิดหน้าต่าง",
-        checklistFooterNote: "หมายเหตุ: ช่องติ๊กนี้เป็นตัวช่วยตรวจความครบของอุปกรณ์ในแต่ละช่วงงาน และจะไม่ถูกบันทึกถาวรหลังรีเฟรชหน้า ข้อมูล Check List นี้อ้างอิงจากคู่มือ/หน้าสินค้า/แหล่งข้อมูลเกม และอาจต่างกันเล็กน้อยตาม edition ซึ่งสามารถแก้ไขได้จากหน้า Admin",
-        clHeadCategory: "หมวด",
-        clHeadItem: "รายการอุปกรณ์",
-        clHeadQty: "จำนวน",
-        clHeadSend: "ส่งของ",
-        clHeadReceive: "ได้รับของ",
-        clHeadReturn: "รับคืนของ",
-        clHeadNote: "หมายเหตุ",
-        checklistEmpty: "ยังไม่มีรายการ Check List ของเกมนี้ สามารถเพิ่มหรือแก้ไขได้จากหน้า Admin",
+        
+        
+        
+        
+        
+        
+        
+        checklistEmpty: "ยังไม่ได้ใส่ URL รูป Check List สำหรับเกมนี้ สามารถเพิ่มได้จากหน้า Admin",
         guideUnavailable: "ยังไม่มีลิงก์วิธีการเล่นแบบละเอียดสำหรับเกมนี้",
         fGuideUrlLabel: "ลิงก์วิธีการเล่นแบบละเอียด",
         fGuideUrlHelp: "ใส่ลิงก์สำหรับปุ่มวิธีการเล่นแบบละเอียด เช่น BGG, PDF, YouTube หรือเว็บคู่มือเกม",
-        fChecklistLabel: "Check List อุปกรณ์ในกล่อง",
-        fChecklistHelp: "ใส่ 1 รายการต่อ 1 บรรทัด โดยใช้ | คั่นเป็น: หมวด | รายการ | จำนวน | หมายเหตุ",
-        fillChecklistTemplateBtn: "เติมตัวอย่างรูปแบบ",
+        fChecklistLabel: "URL รูป Check List อุปกรณ์",
+        fChecklistHelp: "ใส่ลิงก์รูปภาพของรายการอุปกรณ์ เมื่อกดปุ่ม 📋 Check List อุปกรณ์ ระบบจะโชว์รูปนี้ใน Popup",
         checklistTemplate: "หมวด | รายการ | จำนวน | หมายเหตุ\nการ์ด | ไพ่เริ่มต้น | 54 | ไพ่ชุดเริ่มต้น\nโทเคน | โทเคนแต้ม | 30 | นับให้ครบก่อนส่ง\nกระดาน | กระดานหลัก | 1 | -",
         printFilePrefix: "CheckList",
         editBtnShort: "แก้ไข"
@@ -1498,26 +1468,15 @@
         checklistBtn: "📋 Equipment Checklist",
         guideBtn: "📘 Detailed how to play",
         checklistModalTitle: "Equipment Checklist",
-        checklistModalSub: "Check all components before dispatch, upon receipt, and on return. You can print or export to PDF instantly.",
-        checklistPrintBtn: "🖨️ Print Checklist",
-        checklistExportBtn: "📄 Export to PDF",
+        checklistModalSub: "View the equipment checklist image from the URL configured in Admin.",
+        checklistOpenImageBtn: "🖼️ Open full image",
         checklistCloseBtnFooter: "Close",
-        checklistFooterNote: "Note: These checkboxes are temporary helpers for each handoff stage and are not saved permanently after refresh.",
-        clHeadCategory: "Category",
-        clHeadItem: "Component",
-        clHeadQty: "Qty",
-        clHeadSend: "Dispatch",
-        clHeadReceive: "Received",
-        clHeadReturn: "Returned",
-        clHeadNote: "Notes",
-        checklistEmpty: "No checklist has been added for this game yet. You can add or edit it in Admin.",
+        checklistEmpty: "No checklist image URL has been added for this game yet. You can add it in Admin.",
         guideUnavailable: "No detailed how-to-play link has been added for this game yet.",
         fGuideUrlLabel: "Detailed how-to-play link",
         fGuideUrlHelp: "Enter the link used by the detailed guide button, such as BGG, PDF, YouTube, or an official rule page.",
-        fChecklistLabel: "Box contents checklist",
-        fChecklistHelp: "Enter one item per line using: Category | Item | Quantity | Notes",
-        fillChecklistTemplateBtn: "Insert sample format",
-        checklistTemplate: "Category | Item | Qty | Notes\nCards | Starter cards | 54 | Starting deck\nTokens | Score tokens | 30 | Count before dispatch\nBoards | Main board | 1 | -",
+        fChecklistLabel: "Checklist image URL",
+        fChecklistHelp: "Enter the image URL for the equipment checklist. The 📋 button will display this image in the popup.",
         printFilePrefix: "Checklist",
         editBtnShort: "Edit"
       }
@@ -1577,10 +1536,11 @@
     const modalGuideBtn = document.getElementById("modalGuideBtn");
 
     const checklistModal = document.getElementById("checklistModal");
-    const checklistBody = document.getElementById("checklistBody");
     const checklistMeta = document.getElementById("checklistMeta");
     const checklistEmpty = document.getElementById("checklistEmpty");
     const checklistPlayBtn = document.getElementById("checklistPlayBtn");
+    const checklistImage = document.getElementById("checklistImage");
+    const checklistOpenImageBtn = document.getElementById("checklistOpenImageBtn");
 
     const loginModal = document.getElementById("loginModal");
     const adminModal = document.getElementById("adminModal");
@@ -1590,48 +1550,36 @@
     }
 
     function sanitizeGames(list){
-      const defaultGames = Array.isArray(INITIAL_GAMES) ? INITIAL_GAMES : [];
       return (Array.isArray(list) ? list : [])
         .filter(game => {
           const thName = (game.name || "").trim();
           const enName = (game.name_en || "").trim();
           return thName !== "ตลกโยคะ" && enName !== "Yoga Party";
         })
-        .map((game, index) => {
-          const fallback = defaultGames.find(def =>
-            (Number(def.id) && Number(game.id) && Number(def.id) === Number(game.id)) ||
-            ((def.name || "").trim() && (def.name || "").trim() === (game.name || "").trim()) ||
-            ((def.name_en || "").trim() && (def.name_en || "").trim() === (game.name_en || "").trim())
-          ) || {};
-
-          const safeChecklist = Array.isArray(game.checklist) && game.checklist.length
-            ? game.checklist
-            : (Array.isArray(fallback.checklist) ? fallback.checklist : []);
-
-          return {
-            id: Number(game.id) || index + 1,
-            name: game.name || fallback.name || "",
-            name_en: game.name_en || fallback.name_en || game.name || fallback.name || "",
-            image: game.image || fallback.image || "",
-            deposit: Number(game.deposit ?? fallback.deposit ?? 0),
-            players: game.players || fallback.players || "",
-            time: game.time || fallback.time || "",
-            age: game.age || fallback.age || "",
-            desc: game.desc || fallback.desc || "",
-            desc_en: game.desc_en || fallback.desc_en || game.desc || fallback.desc || "",
-            how: game.how || fallback.how || "",
-            how_en: game.how_en || fallback.how_en || game.how || fallback.how || "",
-            guide_url: game.guide_url || fallback.guide_url || "",
-            checklist: safeChecklist.map(item => ({
-              category: item.category || "",
-              item: item.item || "",
-              qty: item.qty || "",
-              note: item.note || ""
-            })).filter(item => item.item),
-            unavailable: Boolean(game.unavailable),
-            available_date: game.available_date || fallback.available_date || ""
-          };
-        });
+        .map((game, index) => ({
+          id: Number(game.id) || index + 1,
+          name: game.name || "",
+          name_en: game.name_en || game.name || "",
+          image: game.image || "",
+          deposit: Number(game.deposit || 0),
+          players: game.players || "",
+          time: game.time || "",
+          age: game.age || "",
+          desc: game.desc || "",
+          desc_en: game.desc_en || game.desc || "",
+          how: game.how || "",
+          how_en: game.how_en || game.how || "",
+          guide_url: game.guide_url || "",
+          checklist_image_url: game.checklist_image_url || "",
+          checklist: Array.isArray(game.checklist) ? game.checklist.map(item => ({
+            category: item.category || "",
+            item: item.item || "",
+            qty: item.qty || "",
+            note: item.note || ""
+          })).filter(item => item.item) : [],
+          unavailable: Boolean(game.unavailable),
+          available_date: game.available_date || ""
+        }));
     }
 
     function normalizeGameIds(){
@@ -1674,28 +1622,7 @@
       return lang === "th" ? (game.how || "-") : (game.how_en || game.how || "-");
     }
 
-    function parseChecklistText(text){
-      return String(text || "")
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map(line => {
-          const parts = line.split("|").map(part => part.trim());
-          return {
-            category: parts[0] || "ทั่วไป",
-            item: parts[1] || "",
-            qty: parts[2] || "",
-            note: parts[3] || ""
-          };
-        })
-        .filter(entry => entry.item);
-    }
 
-    function checklistToText(list){
-      return (Array.isArray(list) ? list : [])
-        .map(entry => [entry.category || "", entry.item || "", entry.qty || "", entry.note || ""].join(" | "))
-        .join("\n");
-    }
 
     function escapeHtml(value){
       return String(value || "")
@@ -1746,7 +1673,7 @@
         "openAdminBtn","loginTitle","userLabel","passLabel","loginBtn","adminHeaderTitle",
         "adminHeaderSub","addNewBtn","logoutBtn","adminFormTitle","fNameLabel","fNameEnLabel","fDepositLabel",
         "fImageLabel","fPlayersLabel","fTimeLabel","fAgeLabel","fUnavailableLabel","fAvailableDateLabel","fDescThLabel","fDescEnLabel",
-        "fHowThLabel","fHowEnLabel","fGuideUrlLabel","fGuideUrlHelp","fChecklistLabel","fChecklistHelp","fillChecklistTemplateBtn","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm","checklistModalTitle","checklistModalSub","checklistPrintBtn","checklistExportBtn","checklistCloseBtnFooter","checklistFooterNote","clHeadCategory","clHeadItem","clHeadQty","clHeadSend","clHeadReceive","clHeadReturn","clHeadNote","checklistEmpty"
+        "fHowThLabel","fHowEnLabel","fGuideUrlLabel","fGuideUrlHelp","fChecklistLabel","fChecklistHelp","saveGameBtn","resetFormBtn","syncTitle","gistIdLabel","gistTokenLabel","loadGistBtn","saveGistBtn","saveLocalBtn","syncHelp","summaryConfirm","checklistModalTitle","checklistModalSub","checklistCloseBtnFooter","checklistEmpty","checklistOpenImageBtn"
       ];
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -1763,7 +1690,6 @@
       if(lineBtnTextEl) lineBtnTextEl.textContent = t("lineBtnText");
       if(modalChecklistBtn) modalChecklistBtn.textContent = t("checklistBtn");
       if(modalGuideBtn) modalGuideBtn.textContent = t("guideBtn");
-      if(checklistPlayBtn) checklistPlayBtn.textContent = t("guideBtn");
 
       days.placeholder = t("daysPlaceholder");
       document.documentElement.lang = lang;
@@ -1886,7 +1812,6 @@
     function openChecklistModal(gameId){
       const game = games.find(g => g.id === Number(gameId));
       if(!game) return;
-      const list = Array.isArray(game.checklist) ? game.checklist : [];
       const meta = [
         `${gameName(game)}`,
         `${t("depositPrefix")} ${money(game.deposit)}`,
@@ -1894,35 +1819,42 @@
         `${game.time || "-"} ${t("minsUnit")}`
       ];
       checklistMeta.innerHTML = meta.map(text => `<div class="meta-chip">${escapeHtml(text)}</div>`).join("");
-      checklistBody.innerHTML = "";
-      let currentGroup = "";
-      list.forEach((entry, index) => {
-        const group = entry.category || (lang === "th" ? "ทั่วไป" : "General");
-        if(group !== currentGroup){
-          currentGroup = group;
-          const groupRow = document.createElement("tr");
-          groupRow.className = "group-row";
-          groupRow.innerHTML = `<td colspan="8">${escapeHtml(group)}</td>`;
-          checklistBody.appendChild(groupRow);
-        }
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${escapeHtml(entry.category || "-")}</td>
-          <td>${escapeHtml(entry.item || "-")}</td>
-          <td>${escapeHtml(entry.qty || "-")}</td>
-          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
-          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
-          <td class="tick-cell"><label class="tick-wrap"><input type="checkbox"><span>${lang === "th" ? "ครบ" : "OK"}</span></label></td>
-          <td>${escapeHtml(entry.note || "-")}</td>
-        `;
-        checklistBody.appendChild(row);
-      });
-      checklistEmpty.style.display = list.length ? "none" : "block";
+
+      const imageUrl = (game.checklist_image_url || "").trim();
+      if(checklistImage){
+        checklistImage.style.display = "none";
+        checklistImage.removeAttribute("src");
+        checklistImage.alt = `${gameName(game)} checklist`;
+      }
+      if(checklistOpenImageBtn){
+        checklistOpenImageBtn.textContent = t("checklistOpenImageBtn");
+        checklistOpenImageBtn.href = imageUrl || "#";
+        checklistOpenImageBtn.style.opacity = imageUrl ? "1" : ".55";
+        checklistOpenImageBtn.style.pointerEvents = imageUrl ? "auto" : "none";
+      }
+      checklistEmpty.textContent = t("checklistEmpty");
+      checklistEmpty.style.display = imageUrl ? "none" : "block";
+
+      if(imageUrl && checklistImage){
+        checklistImage.onload = () => {
+          checklistImage.style.display = "block";
+          checklistEmpty.style.display = "none";
+        };
+        checklistImage.onerror = () => {
+          checklistImage.style.display = "none";
+          checklistEmpty.style.display = "block";
+          checklistEmpty.textContent = lang === "th"
+            ? "โหลดรูป Check List ไม่สำเร็จ กรุณาตรวจสอบ URL รูปในหน้า Admin"
+            : "Unable to load the checklist image. Please verify the image URL in Admin.";
+        };
+        checklistImage.src = imageUrl;
+      }
+
       if(checklistPlayBtn){
         checklistPlayBtn.textContent = t("guideBtn");
         checklistPlayBtn.href = game.guide_url || "#";
         checklistPlayBtn.style.opacity = game.guide_url ? "1" : ".55";
+        checklistPlayBtn.style.pointerEvents = game.guide_url ? "auto" : "none";
       }
       checklistModal.classList.add("show");
     }
@@ -2047,7 +1979,7 @@
             <div style="color:#666;margin-top:2px">${game.name_en || game.name || ""}</div>
             <div style="color:#666;margin-top:4px">${t("depositPrefix")} ${money(game.deposit)} • ${game.players || "-"} ${t("playersUnit")} • ${game.time || "-"} ${t("minsUnit")}</div>
             <div style="color:${game.unavailable ? "#a11" : "#216b2f"};margin-top:6px;font-weight:800">${game.unavailable ? t("unavailableNow") + (game.available_date ? " • " + t("availableOn") + " " + formatAvailableDate(game.available_date) : "") : t("availableNow")}</div>
-            <div style="color:#666;margin-top:6px">${(game.checklist || []).length} checklist item(s)${game.guide_url ? " • Guide link ready" : ""}</div>
+            <div style="color:#666;margin-top:6px">${game.checklist_image_url ? "Checklist image ready" : "No checklist image"}${game.guide_url ? " • Guide link ready" : ""}</div>
           </div>
           <div class="admin-actions">
             <button class="small-btn small-edit">${t("editBtn")}</button>
@@ -2077,7 +2009,7 @@
       document.getElementById("fHowTh").value = "";
       document.getElementById("fHowEn").value = "";
       document.getElementById("fGuideUrl").value = "";
-      document.getElementById("fChecklist").value = "";
+      document.getElementById("fChecklistImageUrl").value = "";
     }
 
     function editGame(id){
@@ -2099,7 +2031,7 @@
       document.getElementById("fHowTh").value = game.how || "";
       document.getElementById("fHowEn").value = game.how_en || "";
       document.getElementById("fGuideUrl").value = game.guide_url || "";
-      document.getElementById("fChecklist").value = checklistToText(game.checklist || []);
+      document.getElementById("fChecklistImageUrl").value = game.checklist_image_url || "";
       const formCard = document.getElementById("adminFormTitle")?.closest(".card");
       if(formCard) formCard.scrollIntoView({ behavior:"smooth", block:"start" });
       setTimeout(() => document.getElementById("fName")?.focus(), 120);
@@ -2121,7 +2053,7 @@
         how: document.getElementById("fHowTh").value.trim(),
         how_en: document.getElementById("fHowEn").value.trim(),
         guide_url: document.getElementById("fGuideUrl").value.trim(),
-        checklist: parseChecklistText(document.getElementById("fChecklist").value)
+        checklist_image_url: document.getElementById("fChecklistImageUrl").value.trim()
       };
 
       if(!data.name){
@@ -2332,8 +2264,6 @@
     }
     document.getElementById("checklistCloseBtn").addEventListener("click", ()=>checklistModal.classList.remove("show"));
     document.getElementById("checklistCloseBtnFooter").addEventListener("click", ()=>checklistModal.classList.remove("show"));
-    document.getElementById("checklistPrintBtn").addEventListener("click", ()=>printChecklist("print"));
-    document.getElementById("checklistExportBtn").addEventListener("click", ()=>printChecklist("pdf"));
     if(checklistPlayBtn){
       checklistPlayBtn.addEventListener("click", (e) => {
         const game = games.find(g => g.id === currentModalGameId);
@@ -2343,11 +2273,6 @@
         }
       });
     }
-    document.getElementById("fillChecklistTemplateBtn").addEventListener("click", () => {
-      const el = document.getElementById("fChecklist");
-      if(!el.value.trim()) el.value = t("checklistTemplate");
-      else el.value += `\n${t("checklistTemplate")}`;
-    });
     closeGameModal.addEventListener("click", ()=>gameModal.classList.remove("show"));
     gameModal.addEventListener("click", e => { if(e.target === gameModal) gameModal.classList.remove("show"); });
     loginModal.addEventListener("click", e => { if(e.target === loginModal) loginModal.classList.remove("show"); });
@@ -2360,8 +2285,7 @@
       if(gistIdInput && !gistIdInput.value && DEFAULT_GIST_ID){
         gistIdInput.value = DEFAULT_GIST_ID;
       }
-      // Auto-loading Gist is disabled here to prevent older remote data from overwriting the bundled checklist and guide links.
-      // Use the Admin button "ดึงข้อมูลจาก Gist" manually when needed.
+      await loadFromGist();
     })();
   </script>
 </body>
